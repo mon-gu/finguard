@@ -100,7 +100,7 @@ class ServerContractTests(unittest.TestCase):
         start = app_js.index('id: "landing-stage-after-freeze"')
         end = app_js.index("\n  },\n];", start)
         stage = app_js[start:end]
-        self.assertIn('action: "설명자료 만들기"', stage)
+        self.assertIn('action: "소명 준비 시작하기"', stage)
         self.assertIn('target: "s00"', stage)
         self.assertIn('flow: "freeze"', stage)
 
@@ -145,10 +145,16 @@ class ServerContractTests(unittest.TestCase):
     def test_example_entry_terms_are_user_facing(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         workspace_js = (WEB_ROOT / "case-workspace.js").read_text(encoding="utf-8")
-        for marker in ("예시 사건으로 체험", "예시 메시지로 바로 점검", "예시 메시지 넣기", "예시 자료 3건 추가", "이 화면에서만 작업"):
+        for marker in ("예시 사건으로 체험", "예시 메시지로 바로 점검", "예시 메시지 넣기", "예시 자료 3건 추가", "이 화면에서만 작업", "figma-experience-path", "결과 보고서"):
             self.assertIn(marker, app_js + workspace_js)
         for legacy in ("예시로 바로 점검", "예시로 바꾸기", "합성 예시 3건 추가", "게스트 체험"):
             self.assertNotIn(legacy, app_js + workspace_js)
+
+    def test_before_demo_message_contains_transfer_signal(self) -> None:
+        app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
+        self.assertIn("50만 원을 송금하면", app_js)
+        self.assertIn("오늘 2시 전까지 송금하고", app_js)
+        self.assertIn("금전 요구 + 시간 압박 + 비밀 요구", app_js)
 
     def test_guides_open_only_from_explicit_controls(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")

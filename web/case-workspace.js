@@ -159,7 +159,7 @@ function recordOverview(kind) {
   const activity = figmaDesktopSection("최근 추가한 자료", "원문을 선택하면 관련 확인 항목으로 이동합니다.");
   record.evidence.slice(-5).reverse().forEach(e => activity.append(recordAction(e.title + " · " + recordTime(e.occurredAt), "record-select-evidence", kind, { "data-evidence-id": e.id, "data-record-view": review })));
   const next = figmaDesktopSection("지금 할 일", "확인 전 항목을 숨기지 않고 자료에 함께 표시합니다.");
-  append(next, recordViewButton(kind === "shield" ? "원문과 항목 대조하기" : "자료 수집 계속하기", kind, review, true),
+  append(next, recordViewButton(kind === "shield" ? "원문과 항목 대조하기" : "예시 자료 추가로 계속하기", kind, review, true),
     recordViewButton(kind === "shield" ? "상담 준비 자료 만들기" : "은행 설명자료 상태 확인", kind, report),
     el("p", "record-muted", "자동 신고·기관 전송·지급정지 해제는 실행하지 않습니다."));
   split.append(activity, next);

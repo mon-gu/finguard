@@ -321,7 +321,7 @@ const LANDING_STAGES = [
     title: "계좌가 막힌 후",
     description: "주문·입금·대화를 연결해 은행에\n설명할 자료를 준비합니다.",
     mobileDescription: "주문·입금·대화를 연결해\n은행에 설명할 자료를 준비합니다.",
-    action: "설명자료 만들기",
+    action: "소명 준비 시작하기",
     target: "s00",
     flow: "freeze",
     tone: "green",
@@ -347,7 +347,7 @@ const ONBOARDING_STEPS = [
   {
     target: "#landing-stage-after-freeze",
     title: "FROZEN은 소명 자료를 연결합니다",
-    description: "계좌가 막힌 후에는 ‘설명자료 만들기’로 들어가 받은 메시지와 거래를 연결한 뒤 결과를 확인합니다. FROZEN이 이 서비스의 중심 작업 공간입니다.",
+    description: "계좌가 막힌 후에는 ‘소명 준비 시작하기’로 들어가 받은 메시지와 거래를 연결한 뒤 결과를 확인합니다. FROZEN이 이 서비스의 중심 작업 공간입니다.",
   },
   {
     target: ".landing-shield-entry",
@@ -575,6 +575,7 @@ const SERVICE_SCREEN_TOURS = {
   "frozen-s00": {
     label: "계좌가 막힌 후 · 사건 시작",
     steps: [
+      { target: ".figma-experience-path", title: "1분 체험 순서를 먼저 보세요", description: "홈에서 ‘계좌가 막힌 후 준비’를 누른 뒤 예시 사건 → 예시 자료 → 자료 확인 → 결과 보고서 순서로 확인합니다." },
       { target: ".figma-home-cases", title: "예시 사건을 골라보세요", description: "먼저 준비된 예시를 선택해 계좌가 막힌 후 자료를 정리하는 흐름을 확인합니다." },
       { target: ".figma-mobile-actions", title: "자료 정리를 시작하세요", description: "선택한 받은 메시지를 확인한 뒤 이 탭에서만 자료를 정리합니다." },
     ],
@@ -2584,7 +2585,7 @@ function renderReviewer() {
  * Figma frame, while the small rail inside the desktop workspace is part of
  * the product screen itself.
  */
-const FIGMA_SAMPLE_TEXT = "“50만 원을 보내면 피해신고를 취소해서 계좌를 풀어주겠습니다. 오늘 2시 전까지 보내고 은행에는 말하지 마세요.”";
+const FIGMA_SAMPLE_TEXT = "“50만 원을 송금하면 피해 신고를 취소해서 계좌를 풀어주겠습니다. 오늘 2시 전까지 송금하고 은행에는 말하지 마세요.”";
 const FIGMA_EVIDENCE = [
   ["금전 요구", "신고 취소를 조건으로 500,000원을 요구"],
   ["긴급성", "오늘 2시 전까지 송금하도록 압박"],
@@ -2880,6 +2881,27 @@ function renderLandingPage() {
   return page;
 }
 
+function renderFrozenDemoPath() {
+  const path = el("section", "figma-experience-path");
+  const title = el("h2", "figma-experience-path-title", "계좌가 막힌 후 · 1분 체험 순서");
+  title.id = "frozen-demo-path-title";
+  append(path, title, el("p", "figma-experience-path-copy", "홈에서 ‘계좌가 막힌 후 준비’를 누른 뒤, 아래 순서로 예시 사건을 끝까지 확인해보세요."));
+  const list = el("ol", "figma-experience-path-list");
+  [
+    ["예시 사건으로 체험", "이 화면의 파란 버튼을 누릅니다."],
+    ["예시 자료 3건 추가", "자료 수집 화면에서 예시 자료를 추가합니다."],
+    ["자료 확인", "받은 내용과 거래 자료를 대조합니다."],
+    ["결과 보고서", "정리한 자료를 결과물로 확인합니다."],
+  ].forEach(([label, description], index) => {
+    const item = el("li", `figma-experience-path-item ${index === 0 ? "is-current" : ""}`.trim());
+    if (index === 0) item.setAttribute("aria-current", "step");
+    append(item, el("span", "figma-experience-path-index", String(index + 1).padStart(2, "0")), el("span", "figma-experience-path-copy-wrap", el("strong", "", label), el("small", "", description)));
+    list.append(item);
+  });
+  path.append(list);
+  return setAttrs(path, { "aria-labelledby": title.id });
+}
+
 function renderActualS00() {
   const body = el("div", "figma-screen-content");
   body.append(el("span", "figma-frozen-context", "이 MVP의 본편 · 계좌가 막힌 후 설명자료 준비"));
@@ -2895,7 +2917,7 @@ function renderActualS00() {
   body.append(cases);
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("예시 사건으로 체험", "select-case", { "data-case-id": "danger-transfer" }), figmaSecondary("다른 사례 보기", "g01", { "data-action": "select-case", "data-case-id": "abstain" }));
-  body.append(actions, el("p", "figma-bottom-note", "실제 개인정보 대신 준비된 예시만 사용합니다."), stageSwitchLinks("s00"), actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
+  body.append(actions, renderFrozenDemoPath(), el("p", "figma-bottom-note", "실제 개인정보 대신 준비된 예시만 사용합니다."), stageSwitchLinks("s00"), actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
   return append(figmaMobileFrame("계좌가 막힌 후 시작", body, "figma-gate-mobile"), renderServiceTour());
 }
 
@@ -3177,7 +3199,7 @@ function renderBeforeCapture() {
 
   const sample = el("div", "before-capture-sample");
   const sampleCopy = el("div", "before-capture-sample-copy");
-  append(sampleCopy, el("p", "", "예시: “30분 안에 입금하지 않으면…”"), el("p", "", "→ 시간 제한 + 금전 요구를 확인합니다."));
+  append(sampleCopy, el("p", "", FIGMA_SAMPLE_TEXT), el("p", "", "→ 금전 요구 + 시간 압박 + 비밀 요구를 확인합니다."));
   append(sample, sampleCopy, actionButton("예시 메시지 넣기", "before-example", "before-capture-sample-chip"));
   body.append(sample, el("div", "before-capture-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 실제 개인정보 대신 준비된 예시 메시지를 사용하세요."));
   body.append(actionButton(state.busy ? "분석 중…" : "메시지 점검하기", "before-check", "button figma-primary before-capture-primary", { disabled: state.busy, "aria-busy": String(state.busy) }));
