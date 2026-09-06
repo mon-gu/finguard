@@ -373,9 +373,9 @@ const SERVICE_TOUR_STEPS = {
   after: {
     label: "AFTER · 송금 직후",
     steps: [
-      { target: ".after-flow-progress", title: "72시간 순서를 확인합니다", description: "송금 직후에는 추가 행동을 줄이고, 공식 확인과 증거 보존 순서를 단계별로 따라갑니다." },
-      { target: ".after-checklist", title: "지금 할 일만 체크하세요", description: "추가 송금 중단, 공식 채널 연락, 원본 보존처럼 현재 단계에서 필요한 행동을 먼저 보여줍니다." },
-      { target: ".after-flow-actions", title: "다음 단계로 이동합니다", description: "‘다음 단계’를 누르면 72시간 대응 순서가 이어집니다. 마지막에는 FROZEN 또는 SHIELD로 연결할 수 있습니다." },
+      { target: ".after-transfer-title", title: "72시간 순서를 확인합니다", description: "송금 직후에는 추가 행동을 줄이고, 공식 확인과 증거 보존 순서를 단계별로 따라갑니다." },
+      { target: ".after-transfer-mobile .figma-mobile-body", title: "현재 화면의 행동만 확인하세요", description: "추가 송금 중단, 공식 채널 연락, 원본 보존처럼 현재 단계에서 필요한 행동을 먼저 보여줍니다." },
+      { target: ".after-transfer-actions, .after-branch-grid", title: "다음 화면으로 이동합니다", description: "화면의 다음 행동을 누르면 초기 대응 기록이 이어집니다. 마지막에는 계좌 보호나 소명 모듈로 연결할 수 있습니다." },
     ],
   },
   frozen: {
@@ -1073,8 +1073,9 @@ function afterTransferBoardGroup(title, tone, children) {
 }
 
 function afterTransferNotice(body) {
-  if (state.afterNotice) body.append(el("p", "after-flow-notice", state.afterNotice));
-  body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "after" }));
+  const target = body.querySelector?.(".figma-mobile-body") || body;
+  if (state.afterNotice) target.append(el("p", "after-flow-notice", state.afterNotice));
+  target.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "after" }));
   return body;
 }
 
