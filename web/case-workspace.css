@@ -83,7 +83,7 @@ textarea.record-input { resize: vertical; min-height: 88px; }
 .record-official-link { color: var(--info); font-size: 14px; font-weight: 700; text-underline-offset: 3px; }
 .record-rail-footer { margin-top: auto; padding: 24px 8px 4px; font-size: 12px; line-height: 1.6; color: #cbd5e1; }
 .record-rail-footer p { font-size: 12px; }
-.record-rail-footer .figma-secondary { padding: 10px; font-size: 12px; }
+.record-rail-footer > .figma-secondary, .record-rail-footer > .record-rail-link { display: flex; width: 100%; margin-top: 10px; padding: 10px; font-size: 12px; }
 .record-rail-link { padding: 8px 0; border: 0; background: transparent; color: #fff; text-decoration: underline; cursor: pointer; font: inherit; }
 .record-reference-bar { width: min(100%, 1450px); padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--warning-soft); margin-bottom: 16px; }
 .record-reference-bar p { font-size: 14px; }

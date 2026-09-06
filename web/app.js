@@ -12,6 +12,57 @@ const COLORS = {
   neutral: "neutral",
 };
 
+function createAfterTransferData() {
+  return {
+    proofName: "",
+    situation: {
+      additionalTransfer: true,
+      credentials: false,
+      remoteControl: false,
+      linkClicked: false,
+      stillContact: true,
+    },
+    contact: {
+      financialStatus: "completed",
+      financialTime: "2026. 09. 06. 14:38",
+      financialRef: "HB-260906-3812",
+      policeStatus: "reported",
+      policeRef: "",
+    },
+    sequence: {
+      stop: true,
+      financial: false,
+      police: false,
+      evidence: true,
+    },
+    evidence: {
+      "E-001": "secured",
+      "E-002": "secured",
+      "E-003": "secured",
+      "E-004": "missing",
+      "E-005": "secured",
+      "E-006": "secured",
+      "E-007": "missing",
+    },
+    facts: {
+      "F-001": "confirmed",
+      "F-002": "confirmed",
+      "F-003": "confirmed",
+      "F-004": "confirmed",
+      "F-005": "edit",
+      "F-006": "needs",
+    },
+    board: {
+      stop: true,
+      proof: true,
+      financial: true,
+      police: false,
+      messages: false,
+      contact: false,
+    },
+  };
+}
+
 const state = {
   screen: "home",
   entryFlow: "default",
@@ -39,10 +90,18 @@ const state = {
   beforeAnalysis: null,
   afterStep: 0,
   afterNotice: "",
+  afterData: createAfterTransferData(),
   shieldStep: 0,
   shieldView: "s01",
   showReference: false,
   gateAnalysis: null,
+  onboardingOpen: false,
+  onboardingStep: 0,
+  onboardingFocusPending: false,
+  serviceTourKind: "",
+  serviceTourOpen: false,
+  serviceTourStep: 0,
+  serviceTourFocusPending: false,
 };
 
 const ENTRY_MODES = {
@@ -267,30 +326,132 @@ const LANDING_STAGES = [
   },
 ];
 
+const ONBOARDING_STORAGE_KEY = "finguard-onboarding-seen-v1";
+const ONBOARDING_STEPS = [
+  {
+    target: "#landing-stages",
+    title: "먼저 현재 상황을 고르세요",
+    description: "FinGuard는 상황에 따라 필요한 화면만 보여줍니다. 행동 전, 송금 직후, 계좌가 막힌 후 중 지금에 가장 가까운 카드를 선택하세요.",
+  },
+  {
+    target: "#landing-stage-before",
+    title: "행동 직전에는 30초만 멈춥니다",
+    description: "문자나 스크린샷의 내용을 넣고 ‘메시지 점검하기’를 누르세요. 위험 신호를 확인한 뒤 송금·인증·링크 클릭을 멈추고 공식 채널로 다시 확인합니다.",
+  },
+  {
+    target: "#landing-stage-after-transfer",
+    title: "이미 보냈다면 순서를 지킵니다",
+    description: "AFTER에서는 추가 송금을 멈추고, 은행 연락·지급정지 문의·증거 보존을 72시간 순서로 안내합니다. 화면의 다음 단계를 따라가면 됩니다.",
+  },
+  {
+    target: "#landing-stage-after-freeze",
+    title: "FROZEN은 소명 자료를 연결합니다",
+    description: "계좌가 막힌 후에는 ‘소명 준비 시작하기’로 들어가 원문을 추가하고, 확인한 사실과 거래를 연결한 뒤 보고서를 만듭니다. FROZEN이 이 서비스의 중심 작업 공간입니다.",
+  },
+  {
+    target: ".landing-shield-entry",
+    title: "불법 추심은 SHIELD에서 기록합니다",
+    description: "반복 연락·협박·추가 송금 요구는 연락 기록, 위험 신호, 증거 보관, 상담 준비 순서로 정리합니다. FROZEN 사건과 섞이지 않는 별도 작업 공간입니다.",
+  },
+  {
+    target: "#landing-engine",
+    title: "모든 흐름은 같은 원칙으로 끝납니다",
+    description: "대화·거래·문서를 근거로 연결하되 최종 판단은 사용자와 공식 기관이 합니다. 실제 개인정보 대신 합성 샘플로 먼저 체험해 보세요.",
+  },
+];
+
+const SERVICE_TOUR_STEPS = {
+  before: {
+    label: "BEFORE · 행동 직전",
+    steps: [
+      { target: ".before-capture-tabs", title: "원문을 넣는 방법을 고르세요", description: "스크린샷을 참고하거나 직접 메시지를 붙여넣을 수 있습니다. 이미지 OCR은 아직 지원하지 않으므로 원문을 직접 확인해 주세요." },
+      { target: ".before-capture-sample", title: "예시로 먼저 연습할 수 있습니다", description: "실제 개인정보 대신 예시 메시지를 불러와 어떤 위험 신호를 찾는지 먼저 확인할 수 있습니다." },
+      { target: ".before-capture-primary", title: "메시지 점검하기를 누르세요", description: "입력한 한 건만 분석합니다. 결과에서 위험 신호와 지금 멈춰야 할 행동을 바로 확인합니다." },
+      { target: ".before-capture-alt", title: "계좌가 이미 막혔다면 FROZEN으로 이동합니다", description: "행동 전 점검과 계좌 정지 후 소명 준비는 다른 흐름입니다. 상황에 맞는 서비스로 이동하세요." },
+    ],
+  },
+  after: {
+    label: "AFTER · 송금 직후",
+    steps: [
+      { target: ".after-flow-progress", title: "72시간 순서를 확인합니다", description: "송금 직후에는 추가 행동을 줄이고, 공식 확인과 증거 보존 순서를 단계별로 따라갑니다." },
+      { target: ".after-checklist", title: "지금 할 일만 체크하세요", description: "추가 송금 중단, 공식 채널 연락, 원본 보존처럼 현재 단계에서 필요한 행동을 먼저 보여줍니다." },
+      { target: ".after-flow-actions", title: "다음 단계로 이동합니다", description: "‘다음 단계’를 누르면 72시간 대응 순서가 이어집니다. 마지막에는 FROZEN 또는 SHIELD로 연결할 수 있습니다." },
+    ],
+  },
+  frozen: {
+    label: "FROZEN · 계좌가 막힌 후",
+    steps: [
+      { target: ".figma-home-cases, .figma-entry-tabs, .record-rail", title: "사건 또는 원문으로 시작합니다", description: "합성 사례를 선택하거나 의심 메시지를 확인해 사건의 첫 원문으로 삼습니다. 실제 개인정보 대신 합성자료를 사용하세요." },
+      { target: ".figma-mobile-actions, .figma-message-form, .figma-result-content, .record-content", title: "원문과 확인 항목을 차례로 봅니다", description: "원문은 그대로 보존하고, 사용자가 확인한 사실·설명·수정 이력을 따로 남깁니다. 자동 확정이 아닙니다." },
+      { target: ".record-rail, .figma-consent-content, .figma-result-content, .figma-entry-tabs", title: "사이드바와 다음 단계로 진행합니다", description: "개요 → 자료 수집 → 원문·사실 확인 → 거래 연결 → 이슈·타임라인 → 보고서 순서로 필요한 화면을 엽니다." },
+      { target: ".record-report-grid, .figma-mobile-actions, .figma-consent-content, .record-content", title: "보고서를 내려받아 검토합니다", description: "선택한 원문과 확인 이력이 담긴 HTML을 내려받거나 브라우저 인쇄에서 PDF로 저장할 수 있습니다. 기관에 자동 전송하지 않습니다." },
+    ],
+  },
+  shield: {
+    label: "SHIELD · 불법 추심 대응",
+    steps: [
+      { target: ".shield-flow-progress, .record-rail", title: "연락을 안전하게 기록합니다", description: "긴급한 신체 위협이 있으면 안전 확보와 112가 먼저입니다. 그 외에는 연락처·시각·채널·요구 내용을 남깁니다." },
+      { target: ".shield-checklist, .record-content", title: "원문과 위험 신호를 분리합니다", description: "문자·통화·스크린샷은 원본으로 보관하고, 협박·기한·추가 송금 요구는 별도 항목으로 정리합니다." },
+      { target: ".shield-flow-actions, .record-content", title: "상담 준비 자료로 연결합니다", description: "기록을 묶어 공식 상담에 가져갈 준비를 합니다. 불법 여부나 채무의 존재·금액을 FinGuard가 확정하지는 않습니다." },
+    ],
+  },
+};
+
 const AFTER_STEPS = [
   {
-    kicker: "AFTER · 송금 직후",
-    title: "지금부터 72시간을\n지켜주세요",
-    intro: "이미 돈을 보냈다면 추가 행동을 줄이고\n공식 확인과 증거 보존부터 시작합니다.",
-    badge: "STOP",
-    calloutTitle: "추가 송금·연락을 멈추세요",
-    calloutCopy: "상대방의 환급·해제·합의 요구에 바로 응답하지 말고, 은행과 공식 기관에 직접 확인하세요.",
+    id: "AF-00",
+    label: "안내",
+    title: "이미 송금했다면,\n지금부터 순서를 지키는 것이\n중요합니다.",
+    intro: "추가 송금을 멈추고, 금융회사 연락과\n증거 보존을 하나의 사건으로 정리합니다.",
   },
   {
-    kicker: "AFTER · 01–30분",
-    title: "먼저 지급정지와\n증거 보존",
-    intro: "순서를 지키면 추가 피해와\n나중의 설명 누락을 줄일 수 있습니다.",
-    badge: "ORDER",
-    calloutTitle: "공식 채널부터 연결하세요",
-    calloutCopy: "은행 앱·대표번호로 지급정지 가능 여부를 확인하고, 거래·대화·전화 기록을 지우지 마세요.",
+    id: "AF-01",
+    label: "송금 정보 확인",
+    progress: "1/7",
+    title: "송금 정보를 확인해주세요",
+    intro: "긴급 대응에 필요한 최소 정보만 먼저 확인합니다.",
   },
   {
-    kicker: "AFTER · 72시간 계획",
-    title: "증거를 묶고\n공식 도움으로 연결",
-    intro: "지금의 기록이 이후 FROZEN 소명과\n신고·상담의 출발점이 됩니다.",
-    badge: "HANDOFF",
-    calloutTitle: "사건 기록을 하나로 남기세요",
-    calloutCopy: "송금 시각·금액·상대방·대화 원문을 묶어두고, 계좌가 막히면 FROZEN에서 소명팩으로 이어갑니다.",
+    id: "AF-02",
+    label: "즉시 대응 순서",
+    progress: "2/7",
+    title: "지금 해야 할 순서",
+    intro: "회수 가능성이 아니라 지금 가능한 행동을 안내합니다.",
+  },
+  {
+    id: "AF-03",
+    label: "공식 연락 기록",
+    progress: "3/7",
+    title: "공식 연락 결과를 기록하세요",
+    intro: "메시지 속 연락처가 아닌 공식 앱·대표번호만 사용합니다.",
+  },
+  {
+    id: "AF-04",
+    label: "증거 보관함",
+    progress: "4/7",
+    title: "증거 원본을 한곳에 모으세요",
+    intro: "사라지기 쉬운 자료부터 보존하고 상태를 확인합니다.",
+  },
+  {
+    id: "AF-05",
+    label: "AI 추출 결과 확인",
+    progress: "5/7",
+    title: "AI가 읽은 사실을 확인하세요",
+    intro: "확인 전 값은 기록팩의 확정 사실로 사용되지 않습니다.",
+  },
+  {
+    id: "AF-06",
+    label: "72시간 대응 보드",
+    progress: "6/7",
+    title: "초기 대응 보드",
+    intro: "대응 현황을 계속 기록하고 다음 공식 행동을 확인합니다.",
+  },
+  {
+    id: "AF-07",
+    label: "초기 대응 기록팩",
+    progress: "7/7",
+    title: "금융사고 초기 대응 기록팩",
+    intro: "확인된 사실·연락 기록·증거를 한 문서로 정리합니다.",
   },
 ];
 
@@ -722,6 +883,7 @@ async function runBeforeAnalysis() {
 function resetAfterFlow() {
   state.afterStep = 0;
   state.afterNotice = "";
+  state.afterData = createAfterTransferData();
 }
 
 function resetShieldFlow() {
@@ -746,62 +908,406 @@ function flowChecklist(items, className = "after-checklist") {
   return list;
 }
 
+const AFTER_TRANSFER_INFO = [
+  ["송금 시각", "2026. 09. 06. 14:22"],
+  ["송금 금액", "3,000,000원"],
+  ["보낸 금융회사", "한빛은행"],
+  ["받는 금융회사", "새길은행"],
+  ["수취인 / 계좌", "김○○ · **** 4821"],
+];
+
+const AFTER_EVIDENCE = [
+  ["E-001", "송금확인증", "필수", "secured"],
+  ["E-002", "사기 메시지 전체 화면", "필수", "secured"],
+  ["E-003", "상대방 계좌·수취인", "필수", "secured"],
+  ["E-004", "통화기록", "권장", "missing"],
+  ["E-005", "추가 송금 요구", "권장", "secured"],
+  ["E-006", "금융회사 연락 기록", "후속", "secured"],
+  ["E-007", "경찰 신고 접수정보", "후속", "missing"],
+];
+
+const AFTER_FACTS = [
+  ["F-001", "송금 시각", "2026. 09. 06. 14:22", "confirmed"],
+  ["F-002", "송금 금액", "3,000,000원", "confirmed"],
+  ["F-003", "수취 금융회사", "새길은행", "confirmed"],
+  ["F-004", "수취인", "김○○", "confirmed"],
+  ["F-005", "추가 요구", "2,000,000원 송금", "edit"],
+  ["F-006", "피해 인지 시각", "2026. 09. 06. 14:31", "needs"],
+];
+
+function afterTransferStepHeader(step) {
+  const header = el("div", "after-transfer-step-header");
+  if (step.progress) header.append(afterTransferProgress(step.progress));
+  append(
+    header,
+    el("span", "after-transfer-screen-code", `${step.id} ${step.label}`),
+    el("span", "after-transfer-kicker", "초기 대응 72시간"),
+    el("h1", "after-transfer-title", step.title),
+    el("p", "after-transfer-intro", step.intro),
+  );
+  return header;
+}
+
+function afterTransferProgress(label) {
+  const progress = el("div", "after-transfer-progress");
+  const track = el("span", "after-transfer-progress-track");
+  const value = el("span", "after-transfer-progress-value");
+  const current = Number.parseInt(label, 10) || 0;
+  setAttrs(value, { style: `width: ${Math.round((current / 7) * 100)}%` });
+  track.append(value);
+  append(progress, el("span", "after-transfer-progress-label", label), track);
+  return progress;
+}
+
+function afterTransferBody(step, className = "") {
+  const body = el("div", `figma-screen-content after-flow-content after-transfer-content ${className}`.trim());
+  body.append(afterTransferStepHeader(step));
+  return body;
+}
+
+function afterTransferActions(...children) {
+  const actions = el("div", "figma-mobile-actions after-flow-actions after-transfer-actions");
+  actions.append(...children);
+  return actions;
+}
+
+function afterTransferInfoRows(rows, className = "after-transfer-info-rows") {
+  const list = el("div", className);
+  rows.forEach(([label, value]) => {
+    const row = el("div", "after-transfer-info-row");
+    append(row, el("span", "after-transfer-info-label", label), el("strong", "after-transfer-info-value", value));
+    list.append(row);
+  });
+  return list;
+}
+
+function afterTransferSituation(label, key) {
+  const item = el("label", "after-transfer-checkbox");
+  const input = setAttrs(el("input"), {
+    type: "checkbox",
+    "data-after-situation": key,
+    checked: Boolean(state.afterData.situation[key]),
+  });
+  append(item, input, el("span", "", label));
+  return item;
+}
+
+function afterTransferSequenceCard(number, title, description, key, tone, status) {
+  const card = el("article", `after-sequence-card after-sequence-${tone}`);
+  const done = Boolean(state.afterData.sequence[key]);
+  const statusButton = actionButton(done ? "완료 확인" : status, "after-toggle-sequence", "after-sequence-status", {
+    "data-after-sequence": key,
+    "aria-pressed": done,
+  });
+  append(card, el("span", "after-sequence-number", number), el("div", "after-sequence-copy", el("strong", "", title), el("span", "", description)), statusButton);
+  return card;
+}
+
+function afterTransferRadio(label, name, value, checked, field) {
+  const item = el("label", "after-transfer-radio");
+  const input = setAttrs(el("input"), {
+    type: "radio",
+    name,
+    value,
+    checked,
+    "data-after-contact": field,
+  });
+  append(item, input, el("span", "", label));
+  return item;
+}
+
+function afterTransferField(label, id, value, field) {
+  const wrapper = el("label", "after-transfer-field");
+  const input = setAttrs(el("input"), {
+    id,
+    type: "text",
+    value,
+    "data-after-contact-field": field,
+    autocomplete: "off",
+  });
+  append(wrapper, el("span", "after-transfer-field-label", label), input);
+  return wrapper;
+}
+
+function afterEvidenceStatus(id, stateValue) {
+  if (id === "E-006" && stateValue === "secured") return "작성 중";
+  return stateValue === "secured" ? "확보" : "미확보";
+}
+
+function afterTransferEvidenceRow([id, label, requirement, initialStatus]) {
+  const checked = state.afterData.evidence[id] === "secured";
+  const item = el("label", `after-evidence-row ${checked ? "is-secured" : "is-missing"}`.trim());
+  const input = setAttrs(el("input"), { type: "checkbox", "data-after-evidence": id, checked });
+  const stateLabel = afterEvidenceStatus(id, checked ? "secured" : initialStatus === "secured" ? "missing" : "missing");
+  append(item, input, el("span", "after-evidence-id", id), el("span", "after-evidence-copy", el("strong", "", label), el("small", "", requirement)), el("span", `after-evidence-state ${checked ? "is-secured" : "is-missing"}`, stateLabel));
+  return item;
+}
+
+function afterFactStatusLabel(status) {
+  return { confirmed: "확인", edit: "수정", needs: "확인 필요" }[status] || "확인 필요";
+}
+
+function afterTransferFactRow([id, label, value, initialStatus]) {
+  const status = state.afterData.facts[id] || initialStatus;
+  const row = button("", `after-fact-row after-fact-${status}`, {
+    "data-action": "after-toggle-fact",
+    "data-after-fact": id,
+    "aria-label": `${label} ${afterFactStatusLabel(status)}`,
+    "aria-pressed": status === "confirmed",
+  });
+  append(row, el("span", "after-fact-id", id), el("span", "after-fact-copy", el("strong", "", label), el("small", "", value)), el("span", `after-fact-status after-fact-status-${status}`, afterFactStatusLabel(status)));
+  return row;
+}
+
+function afterTransferBoardCheck(label, key) {
+  const item = el("label", "after-board-check");
+  const input = setAttrs(el("input"), { type: "checkbox", "data-after-board": key, checked: Boolean(state.afterData.board[key]) });
+  append(item, input, el("span", "", label));
+  return item;
+}
+
+function afterTransferBoardGroup(title, tone, children) {
+  const group = el("section", `after-board-group after-board-${tone}`);
+  append(group, el("h3", "after-board-group-title", title), children);
+  return group;
+}
+
+function afterTransferNotice(body) {
+  if (state.afterNotice) body.append(el("p", "after-flow-notice", state.afterNotice));
+  body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "after" }));
+  return body;
+}
+
+function renderAfter00() {
+  const body = el("div", "figma-screen-content after-flow-content after-transfer-content after-af00");
+  body.append(
+    figmaBadge("초기 대응 72시간", "after-transfer-badge"),
+    el("h1", "after-transfer-title", AFTER_STEPS[0].title),
+    el("p", "after-transfer-intro", AFTER_STEPS[0].intro),
+    el("h2", "after-transfer-section-title", "FinGuard가 도와주는 일"),
+  );
+  const actions = el("div", "after-transfer-help-list");
+  [
+    ["1", "지금 해야 할 공식 행동 정리", "danger"],
+    ["2", "송금·메시지·통화 증거 보존", "info"],
+    ["3", "금융회사·경찰 연락 결과 기록", "success"],
+    ["4", "사건 타임라인과 기록팩 생성", "purple"],
+  ].forEach(([number, title, tone]) => {
+    const item = el("div", `after-transfer-help-item after-help-${tone}`);
+    append(item, el("span", "after-transfer-help-number", number), el("strong", "", title));
+    actions.append(item);
+  });
+  body.append(
+    actions,
+    figmaCallout("안내", "피해금 회수·환급을 보장하지 않으며, 금융회사와 수사기관의 판단을 대체하지 않습니다.", "info"),
+    afterTransferActions(
+      figmaPrimary("긴급 대응 시작", "after-next"),
+      actionButton("샘플 사건으로 체험", "after-sample", "button figma-secondary"),
+    ),
+  );
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter01() {
+  const body = afterTransferBody(AFTER_STEPS[1], "after-af01");
+  const upload = setAttrs(el("label", "after-upload-card"), { for: "after-transfer-proof" });
+  const fileInput = setAttrs(el("input", "after-file-input"), { id: "after-transfer-proof", type: "file", accept: "image/png,image/jpeg" });
+  append(upload, el("span", "after-upload-icon", "↑"), el("span", "after-upload-copy", el("strong", "", "송금확인증 업로드"), el("small", "", state.afterData.proofName || "PNG · JPG · 최대 10MB")), el("span", "after-upload-choice", state.afterData.proofName ? "선택됨" : "선택"), fileInput);
+  const details = el("section", "after-transfer-card after-transfer-ai-card");
+  append(details, el("h2", "after-transfer-section-title", "AI가 읽은 송금 정보"), afterTransferInfoRows(AFTER_TRANSFER_INFO), figmaBadge("사용자 확인 필요", "after-user-confirmed-badge"));
+  const situation = el("section", "after-transfer-situation");
+  append(
+    situation,
+    el("h2", "after-transfer-section-title", "현재 상황"),
+    afterTransferSituation("추가 송금을 요구받음", "additionalTransfer"),
+    afterTransferSituation("인증정보·비밀번호 전달", "credentials"),
+    afterTransferSituation("원격제어 앱 설치", "remoteControl"),
+    afterTransferSituation("메시지 링크 클릭", "linkClicked"),
+    afterTransferSituation("아직 상대방과 연락 중", "stillContact"),
+  );
+  body.append(upload, details, situation, afterTransferActions(figmaPrimary("내 긴급 대응 순서 만들기", "after-next")));
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter02() {
+  const body = afterTransferBody(AFTER_STEPS[2], "after-af02");
+  body.append(figmaCallout("송금 후 10분 경과", "회수 가능성이 아니라 지금 가능한 행동을 안내합니다.", "warning"), el("h2", "after-transfer-section-title", "지금 해야 할 순서"));
+  const sequence = el("div", "after-sequence-list");
+  sequence.append(
+    afterTransferSequenceCard("1", "추가 행동 중단", "추가 송금·상대방 연락·인증정보 전달 중단", "stop", "danger", "시작 전"),
+    afterTransferSequenceCard("2", "금융회사 공식 연락", "피해 사실과 지급정지·피해구제 절차 문의", "financial", "info", "시작 전"),
+    afterTransferSequenceCard("3", "경찰 신고 준비", "송금정보와 사기 메시지로 공식 신고 준비", "police", "warning", "시작 전"),
+    afterTransferSequenceCard("4", "증거 원본 보존", "송금확인증·메시지·통화기록 보존", "evidence", "success", "2 / 5 확보"),
+  );
+  body.append(
+    sequence,
+    figmaCallout("인증정보·원격제어 앱을 제공했다면", "계좌·기기 보호 행동이 먼저 표시됩니다.", "danger"),
+    afterTransferActions(actionButton("공식 연락 기록 시작", "after-next", "button figma-primary after-action-blue")),
+    el("p", "after-transfer-footer-note", "72시간은 관리 구간이며 회수 보장 기한이 아닙니다."),
+  );
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter03() {
+  const body = afterTransferBody(AFTER_STEPS[3], "after-af03");
+  const financial = el("section", "after-contact-card after-contact-financial");
+  append(
+    financial,
+    figmaBadge("금융회사", "after-contact-badge after-contact-blue"),
+    el("h2", "after-contact-title", "연락 상태"),
+    el("div", "after-transfer-radio-list",
+      afterTransferRadio("시작 전", "after-financial-status", "started", state.afterData.contact.financialStatus === "started", "financialStatus"),
+      afterTransferRadio("연결 중", "after-financial-status", "connecting", state.afterData.contact.financialStatus === "connecting", "financialStatus"),
+      afterTransferRadio("지급정지·피해구제 문의 완료", "after-financial-status", "completed", state.afterData.contact.financialStatus === "completed", "financialStatus"),
+      afterTransferRadio("추가 서류 요청받음", "after-financial-status", "documents", state.afterData.contact.financialStatus === "documents", "financialStatus"),
+    ),
+    el("div", "after-contact-fields", afterTransferField("연락 시각", "after-financial-time", state.afterData.contact.financialTime, "financialTime"), afterTransferField("상담 접수번호", "after-financial-ref", state.afterData.contact.financialRef, "financialRef")),
+  );
+  const police = el("section", "after-contact-card after-contact-police");
+  append(
+    police,
+    figmaBadge("경찰", "after-contact-badge after-contact-purple"),
+    el("h2", "after-contact-title", "신고 상태"),
+    el("div", "after-transfer-radio-list",
+      afterTransferRadio("시작 전", "after-police-status", "started", state.afterData.contact.policeStatus === "started", "policeStatus"),
+      afterTransferRadio("신고 접수", "after-police-status", "reported", state.afterData.contact.policeStatus === "reported", "policeStatus"),
+      afterTransferRadio("접수번호 발급", "after-police-status", "numbered", state.afterData.contact.policeStatus === "numbered", "policeStatus"),
+      afterTransferRadio("사실확인 자료 준비 중", "after-police-status", "preparing", state.afterData.contact.policeStatus === "preparing", "policeStatus"),
+    ),
+    afterTransferField("접수번호", "after-police-ref", state.afterData.contact.policeRef || "신고 접수 후 입력", "policeRef"),
+  );
+  body.append(
+    financial,
+    police,
+    figmaCallout("공식 채널에서 확인한 연락만 기록합니다.", "메시지에 적힌 번호나 링크로 연락한 결과는 공식 연락 기록과 구분하세요.", "info"),
+    afterTransferActions(actionButton("연락 결과 저장", "after-next", "button figma-primary after-action-blue")),
+    el("p", "after-transfer-footer-note", "FinGuard는 실제 전화·신고·지급정지를 대신 실행하지 않습니다."),
+  );
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter04() {
+  const body = afterTransferBody(AFTER_STEPS[4], "after-af04");
+  const secured = Object.values(state.afterData.evidence).filter((value) => value === "secured").length;
+  const progress = el("section", "after-evidence-progress-card");
+  append(progress, el("div", "after-evidence-progress-heading", el("strong", "", "핵심 증거 확보"), el("strong", "", `${secured} / 7`)));
+  const track = el("div", "after-evidence-progress-track", el("span", "after-evidence-progress-value"));
+  track.firstElementChild.style.width = `${Math.round((secured / 7) * 100)}%`;
+  progress.append(track);
+  const list = el("section", "after-evidence-section");
+  append(list, el("h2", "after-transfer-section-title", "사건 증거"));
+  AFTER_EVIDENCE.forEach((row) => list.append(afterTransferEvidenceRow(row)));
+  body.append(progress, list, afterTransferActions(figmaPrimary("AI로 사건 정보 정리", "after-next")));
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter05() {
+  const body = afterTransferBody(AFTER_STEPS[5], "after-af05");
+  const original = el("section", "after-original-card");
+  append(original, el("div", "after-original-heading", el("strong", "", "원본 · 송금확인증 E-001"), actionButton("원본 영역 연결", "after-original-link", "after-original-link-button")), el("strong", "after-original-bank", "한빛은행 이체 확인"), el("strong", "after-original-amount", "3,000,000원"), el("small", "", "2026. 09. 06. 14:22 → 새길은행 김○○"));
+  const facts = el("section", "after-facts-section");
+  const confirmed = Object.values(state.afterData.facts).filter((value) => value === "confirmed").length;
+  append(facts, el("h2", "after-transfer-section-title", `추출된 사실 ${confirmed} / 6 확인`));
+  AFTER_FACTS.forEach((row) => facts.append(afterTransferFactRow(row)));
+  body.append(original, facts, afterTransferActions(figmaPrimary("확인한 사실로 타임라인 만들기", "after-next")));
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function renderAfter06() {
+  const body = afterTransferBody(AFTER_STEPS[6], "after-af06");
+  const completed = Object.values(state.afterData.board).filter(Boolean).length;
+  body.append(
+    figmaCallout("송금 후 42분", `${completed} / 6 완료`, "warning"),
+    el("h2", "after-transfer-section-title", "초기 대응 보드"),
+    afterTransferBoardGroup("지금", "now", [
+      afterTransferBoardCheck("추가 송금 중단", "stop"),
+      afterTransferBoardCheck("송금확인증 보존", "proof"),
+      afterTransferBoardCheck("금융회사 공식 연락", "financial"),
+    ]),
+    afterTransferBoardGroup("오늘", "today", [
+      afterTransferBoardCheck("경찰 피해 신고", "police"),
+      afterTransferBoardCheck("전체 메시지·통화기록 보존", "messages"),
+      afterTransferBoardCheck("상담 접수번호 기록", "contact"),
+    ]),
+    afterTransferBoardGroup("3영업일 내 확인", "deadline", [
+      el("p", "after-board-static-item", "금융회사 요청 서류 확인"),
+      el("p", "after-board-static-item", "필요한 신청서 제출 여부 확인"),
+    ]),
+    afterTransferBoardGroup("추후 추적", "followup", [
+      el("p", "after-board-static-item", "금융회사 처리상태 확인"),
+      el("p", "after-board-static-item", "추가 피해·자료 보완"),
+    ]),
+  );
+  const next = el("section", "after-board-next");
+  append(next, el("div", "after-board-next-copy", el("strong", "", "지금 해야 할 다음 행동"), el("span", "", "금융회사 공식 연락 결과를 기록하세요.")), actionButton("이동", "after-go-contact", "button after-board-next-button"));
+  body.append(next, el("p", "after-transfer-footer-note", "72시간 이후에도 미완료 대응은 후속 단계에서 계속 관리합니다."));
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function afterTransferReportPreview() {
+  const preview = el("article", "after-report-preview");
+  append(preview, el("strong", "after-report-brand", "FinGuard"), el("h2", "after-report-title", "금융사고 초기 대응 기록팩"), el("small", "after-report-meta", "사건 FG-AF-260906-001 · 합성 데모"));
+  [
+    ["1. 사건 개요", "송금 14:22 · 3,000,000원 · 피해 인지 14:31"],
+    ["2. 송금 사실", "한빛은행 → 새길은행 · 김○○ · ****4821"],
+    ["3. 사건 타임라인", "메시지 수신 → 송금 → 추가 요구 → 공식 연락"],
+    ["4. 공식 연락 기록", `금융회사 ${state.afterData.contact.financialRef || "접수번호 입력 필요"} · 경찰 접수 중`],
+    ["5. 증거 색인", "E-001 송금확인증 · E-002 메시지 · E-004 통화기록"],
+    ["6. 아직 부족한 정보", "경찰 접수번호 · 전체 통화기록 · 추가 요청자료"],
+  ].forEach(([title, value]) => preview.append(el("div", "after-report-row", el("strong", "", title), el("span", "", value))));
+  preview.append(el("p", "after-report-footnote", "모든 사실은 원본 증거 ID와 연결됩니다."));
+  return preview;
+}
+
+function renderAfter07() {
+  const body = afterTransferBody(AFTER_STEPS[7], "after-af07");
+  body.append(afterTransferReportPreview());
+  const branches = el("div", "after-branch-grid");
+  const shield = el("section", "after-branch-card after-branch-shield");
+  append(shield, figmaBadge("계좌·기기 보호", "after-branch-badge after-branch-danger"), el("p", "", "인증정보 또는 원격제어 앱을 제공한 경우, 일반 순서보다 먼저 보호 행동을 제시합니다."), actionButton("보호 행동 확인", "after-shield", "button after-branch-button"));
+  const freeze = el("section", "after-branch-card after-branch-freeze");
+  append(freeze, figmaBadge("계좌 정지 후 연결", "after-branch-badge after-branch-info"), el("p", "", "본인 계좌까지 지급정지되면 기존 사건·증거를 유지한 채 소명 모듈로 전환합니다."), actionButton("소명 모듈로 이동", "after-freeze", "button after-branch-button"));
+  branches.append(shield, freeze);
+  body.append(
+    branches,
+    afterTransferActions(
+      actionButton("PDF 다운로드", "after-download", "button figma-primary after-action-blue"),
+      actionButton("대응 현황 계속 기록", "after-go-board", "button figma-secondary"),
+    ),
+    el("p", "after-transfer-footer-note", "본 기록팩은 회수·환급·지급정지를 판단하거나 보장하지 않습니다."),
+  );
+  return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
+}
+
+function afterEscapeHtml(value) {
+  return String(value ?? "").replace(/[&<>\"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character]));
+}
+
+function afterReportPrintMarkup() {
+  const contact = state.afterData.contact;
+  const rows = [
+    ["1. 사건 개요", "송금 14:22 · 3,000,000원 · 피해 인지 14:31"],
+    ["2. 송금 사실", "한빛은행 → 새길은행 · 김○○ · ****4821"],
+    ["3. 사건 타임라인", "메시지 수신 → 송금 → 추가 요구 → 공식 연락"],
+    ["4. 공식 연락 기록", `금융회사 ${contact.financialRef || "접수번호 입력 필요"} · 경찰 ${contact.policeRef || "접수 중"}`],
+    ["5. 증거 색인", "E-001 송금확인증 · E-002 메시지 · E-004 통화기록"],
+    ["6. 아직 부족한 정보", "경찰 접수번호 · 전체 통화기록 · 추가 요청자료"],
+  ];
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>FinGuard 금융사고 초기 대응 기록팩</title><style>body{font-family:Arial,sans-serif;color:#101828;max-width:760px;margin:48px auto;padding:0 28px;line-height:1.6}h1{font-size:26px;margin:0 0 6px}p{color:#667085}.row{padding:16px 0;border-top:1px solid #d0d5dd}.row strong,.row span{display:block}.row strong{font-size:14px}.row span{color:#475467;margin-top:4px}.meta{font-size:12px;color:#667085;margin-bottom:28px}.notice{margin-top:32px;padding:14px;background:#f8fafc;color:#667085;font-size:12px}</style></head><body><h1>금융사고 초기 대응 기록팩</h1><p class="meta">사건 FG-AF-260906-001 · 합성 데모</p>${rows.map(([title, value]) => `<div class="row"><strong>${afterEscapeHtml(title)}</strong><span>${afterEscapeHtml(value)}</span></div>`).join("")}<p class="notice">모든 사실은 원본 증거 ID와 연결됩니다. 본 기록팩은 회수·환급·지급정지를 판단하거나 보장하지 않습니다.</p></body></html>`;
+}
+
 function renderAfterFlow() {
   const index = Math.max(0, Math.min(AFTER_STEPS.length - 1, state.afterStep));
-  const step = AFTER_STEPS[index];
-  const body = el("div", "figma-screen-content after-flow-content");
-  append(
-    body,
-    el("span", "after-flow-kicker", step.kicker),
-    el("h1", "after-flow-title", step.title),
-    el("p", "after-flow-intro", step.intro),
-    flowProgress(AFTER_STEPS.length, index, "after-flow-progress"),
-    figmaCallout(step.badge, step.calloutTitle + " · " + step.calloutCopy, index === 0 ? "danger" : "warning"),
-  );
-
-  if (index === 0) {
-    body.append(
-      el("div", "after-timer", el("strong", "", "72시간"), el("span", "", "추가 피해를 줄이고 공식 확인을 이어가는 시간")),
-      flowChecklist([
-        ["추가 송금하지 않기", "환급·해제 비용 요구에도 멈춥니다."],
-        ["메시지 속 연락처 쓰지 않기", "은행 앱이나 공식 대표번호를 직접 엽니다."],
-        ["대화·거래 기록 보존하기", "삭제·편집·재전송을 하지 않습니다."],
-      ]),
-    );
-  } else if (index === 1) {
-    body.append(
-      flowChecklist([
-        ["은행 공식 채널에 연락", "송금 시각·금액·상대 계좌를 바로 확인합니다."],
-        ["지급정지 가능 여부 확인", "상담 접수번호와 담당 부서를 기록합니다."],
-        ["증거 원본 보관", "문자·메신저·통화·거래 내역을 한 폴더에 둡니다."],
-      ]),
-      figmaCallout("기록 원칙", "원문과 파일은 원본 그대로 남기고, 설명이나 추정은 별도 메모로 구분하세요.", "info"),
-    );
-  } else {
-    body.append(
-      flowChecklist([
-        ["사건의 핵심 사실", "언제·얼마를·누구에게·어떤 경로로 보냈는지"],
-        ["연결할 원문", "상대방 메시지·프로필·통화·링크·파일"],
-        ["다음 공식 행동", "은행·상담기관·수사기관에 확인할 질문"],
-      ]),
-      figmaCallout("다음 연결", "계좌가 막혔다면 FROZEN에서 거래·대화·문서를 연결해 소명팩으로 이어갑니다.", "info"),
-    );
-  }
-
-  const actions = el("div", "figma-mobile-actions after-flow-actions");
-  if (index < AFTER_STEPS.length - 1) {
-    actions.append(figmaPrimary(index === 0 ? "72시간 계획 보기" : "증거 보존 다음 단계", "after-next"));
-  } else {
-    actions.append(screenButton("FROZEN 소명 시작하기", "s00", "button figma-primary", {
-      "data-entry-flow": "freeze",
-    }));
-    actions.append(screenButton("불법 추심이 계속되면 SHIELD 보기", "shield", "button figma-secondary"));
-  }
-  if (index > 0) actions.append(actionButton("이전 단계", "after-back", "button figma-secondary"));
-  else actions.append(screenButton("홈으로 돌아가기", "home", "button figma-secondary"));
-  body.append(actions);
-  if (state.afterNotice) body.append(el("p", "after-flow-notice", state.afterNotice));
-  return figmaMobileFrame("AFTER · " + (index + 1) + "/3", body, "after-mobile");
+  let page;
+  if (index === 0) page = renderAfter00();
+  else if (index === 1) page = renderAfter01();
+  else if (index === 2) page = renderAfter02();
+  else if (index === 3) page = renderAfter03();
+  else if (index === 4) page = renderAfter04();
+  else if (index === 5) page = renderAfter05();
+  else if (index === 6) page = renderAfter06();
+  else page = renderAfter07();
+  return append(page, renderServiceTour());
 }
 
 function renderShieldFlow() {
@@ -845,7 +1351,8 @@ function renderShieldFlow() {
   if (index > 0) actions.append(actionButton("이전 단계", "shield-back", "button figma-secondary"));
   else actions.append(screenButton("홈으로 돌아가기", "home", "button figma-secondary"));
   body.append(actions);
-  return figmaMobileFrame("SHIELD · " + (index + 1) + "/3", body, "shield-mobile");
+  body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "shield" }));
+  return append(figmaMobileFrame("SHIELD · " + (index + 1) + "/3", body, "shield-mobile"), renderServiceTour());
 }
 
 function parseHash() {
@@ -889,12 +1396,161 @@ function navigate(screen, options = {}) {
   if (options.variant && RESULT_STATES[options.variant]) state.variant = options.variant;
   if (options.reviewScreen && REVIEW_SCREENS.some(([id]) => id === options.reviewScreen)) state.reviewScreen = options.reviewScreen;
   if (options.notice !== undefined) state.notice = options.notice;
+  maybeOpenServiceTour(screen);
   writeHash();
   render();
   window.requestAnimationFrame(() => {
     appMain.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   });
+}
+
+function hasSeenOnboarding() {
+  try {
+    return window.localStorage.getItem(ONBOARDING_STORAGE_KEY) === "seen";
+  } catch {
+    return false;
+  }
+}
+
+function rememberOnboardingDismissal() {
+  try {
+    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, "seen");
+  } catch {
+    // Private browsing or blocked storage should not prevent the guide from closing.
+  }
+}
+
+function dismissOnboarding(remember = true) {
+  state.onboardingOpen = false;
+  state.onboardingFocusPending = false;
+  if (remember) rememberOnboardingDismissal();
+}
+
+function openOnboarding() {
+  if (state.screen !== "home") {
+    state.screen = "home";
+    state.homeNavOpen = false;
+    writeHash();
+  }
+  state.onboardingOpen = true;
+  state.onboardingStep = 0;
+  state.onboardingFocusPending = true;
+  render();
+}
+
+function renderOnboarding() {
+  if (!state.onboardingOpen) return null;
+  const step = ONBOARDING_STEPS[state.onboardingStep] || ONBOARDING_STEPS[0];
+  const last = state.onboardingStep === ONBOARDING_STEPS.length - 1;
+  const layer = el("div", "onboarding-layer");
+  const dialog = setAttrs(el("aside", "onboarding-guide"), {
+    role: "dialog",
+    "aria-modal": "false",
+    "aria-labelledby": "onboarding-title",
+    "aria-describedby": "onboarding-description",
+  });
+  const header = el("div", "onboarding-guide-header");
+  append(header, el("span", "onboarding-kicker", "처음 사용 안내"), el("span", "onboarding-progress", `${state.onboardingStep + 1} / ${ONBOARDING_STEPS.length}`));
+  const body = el("div", "onboarding-guide-body");
+  append(body, el("h2", "onboarding-title", step.title), el("p", "onboarding-description", step.description));
+  const footer = el("div", "onboarding-guide-footer");
+  const controls = el("div", "onboarding-controls");
+  append(
+    controls,
+    actionButton("이전", "onboarding-prev", "onboarding-button onboarding-button-quiet", { disabled: state.onboardingStep === 0 }),
+    actionButton(last ? "시작하기" : "다음", "onboarding-next", "onboarding-button onboarding-button-primary onboarding-next"),
+  );
+  append(footer, controls, actionButton("건너뛰기", "onboarding-skip", "onboarding-skip-button"));
+  dialog.append(header, body, footer);
+  layer.append(dialog);
+  return layer;
+}
+
+function serviceTourStorageKey(kind) {
+  return `finguard-service-tour-${kind}-v1`;
+}
+
+function hasSeenServiceTour(kind) {
+  try {
+    return window.localStorage.getItem(serviceTourStorageKey(kind)) === "seen";
+  } catch {
+    return false;
+  }
+}
+
+function rememberServiceTourDismissal(kind) {
+  try {
+    window.localStorage.setItem(serviceTourStorageKey(kind), "seen");
+  } catch {
+    // A blocked preference store must not prevent the service from working.
+  }
+}
+
+function serviceTourKindForScreen(screen) {
+  if (["before", "before-result"].includes(screen)) return "before";
+  if (screen === "after") return "after";
+  if (["s00", "g01", "g02", "g03", "workspace", ...CASE_SCREENS.map(([id]) => id)].includes(screen)) return "frozen";
+  if (["shield", "shield-workspace"].includes(screen)) return "shield";
+  return "";
+}
+
+function maybeOpenServiceTour(screen) {
+  const kind = serviceTourKindForScreen(screen);
+  if (!kind || state.onboardingOpen || hasSeenServiceTour(kind)) return;
+  if (state.serviceTourOpen && state.serviceTourKind !== kind) dismissServiceTour(false);
+  if (state.serviceTourOpen) return;
+  state.serviceTourKind = kind;
+  state.serviceTourOpen = true;
+  state.serviceTourStep = 0;
+  state.serviceTourFocusPending = true;
+}
+
+function dismissServiceTour(remember = true) {
+  const kind = state.serviceTourKind;
+  state.serviceTourOpen = false;
+  state.serviceTourFocusPending = false;
+  if (remember && kind) rememberServiceTourDismissal(kind);
+}
+
+function openServiceTour(kind = serviceTourKindForScreen(state.screen)) {
+  if (!SERVICE_TOUR_STEPS[kind]) return;
+  state.onboardingOpen = false;
+  state.serviceTourKind = kind;
+  state.serviceTourOpen = true;
+  state.serviceTourStep = 0;
+  state.serviceTourFocusPending = true;
+  render();
+}
+
+function renderServiceTour() {
+  if (!state.serviceTourOpen) return null;
+  const tour = SERVICE_TOUR_STEPS[state.serviceTourKind];
+  if (!tour) return null;
+  const step = tour.steps[state.serviceTourStep] || tour.steps[0];
+  const last = state.serviceTourStep === tour.steps.length - 1;
+  const layer = el("div", "onboarding-layer service-tour-layer");
+  const dialog = setAttrs(el("aside", "onboarding-guide service-tour-guide"), {
+    role: "dialog",
+    "aria-modal": "false",
+    "aria-labelledby": "service-tour-title",
+    "aria-describedby": "service-tour-description",
+  });
+  const header = el("div", "onboarding-guide-header");
+  append(header, el("span", "onboarding-kicker", tour.label), el("span", "onboarding-progress", `${state.serviceTourStep + 1} / ${tour.steps.length}`));
+  const body = el("div", "onboarding-guide-body");
+  append(body, el("h2", "onboarding-title", step.title), el("p", "onboarding-description", step.description));
+  const footer = el("div", "onboarding-guide-footer");
+  const controls = el("div", "onboarding-controls");
+  append(
+    controls,
+    actionButton("이전", "service-tour-prev", "onboarding-button onboarding-button-quiet", { disabled: state.serviceTourStep === 0 }),
+    actionButton(last ? "시작하기" : "다음", "service-tour-next", "onboarding-button onboarding-button-primary onboarding-next"),
+  );
+  append(footer, controls, actionButton("건너뛰기", "service-tour-skip", "onboarding-skip-button"));
+  dialog.append(header, body, footer);
+  layer.append(dialog);
+  return layer;
 }
 
 function updateNav() {
@@ -1721,7 +2377,7 @@ function landingNavigation() {
   LANDING_NAV_ITEMS.forEach((item) => primary.append(landingNavItem(item)));
 
   const tools = el("div", "landing-nav-tools");
-  tools.append(landingNavCta("지급정지 소명 시작"));
+  tools.append(actionButton("사용 방법", "open-onboarding", "landing-help-button"), landingNavCta("지급정지 소명 시작"));
 
   const menuToggle = button("", "landing-menu-toggle", {
     "data-action": "toggle-home-nav",
@@ -1773,14 +2429,15 @@ function prototypeNavigation() {
     }));
   });
 
+  const help = actionButton("사용 방법", "open-onboarding", "prototype-nav-help");
   const cta = screenButton("지급정지 소명 시작", "s00", "prototype-nav-cta", { "data-entry-flow": "freeze" });
-  inner.append(brand, links, cta);
+  inner.append(brand, links, help, cta);
   header.append(inner);
   return header;
 }
 
 function landingStageCard(stage) {
-  const card = setAttrs(el("article", `landing-stage-card landing-stage-${stage.tone} ${stage.featured ? "landing-stage-featured" : ""}`.trim()), { id: stage.id });
+  const card = setAttrs(el("article", `landing-stage-card landing-stage-${stage.tone} ${stage.featured ? "landing-stage-featured" : ""}`.trim()), { id: stage.id, "data-onboarding-target": stage.id });
   const description = el("p", "landing-stage-description");
   append(description, el("span", "landing-copy-desktop", stage.description), el("span", "landing-copy-mobile", stage.mobileDescription || stage.description));
   append(card, stage.featured ? el("span", "landing-stage-priority", "MVP 주인공") : null, el("span", "landing-stage-badge", stage.badge), el("h3", "landing-stage-title", stage.title), description, screenButton(stage.action, stage.target, "landing-stage-action", { "data-entry-flow": stage.flow }));
@@ -1800,13 +2457,13 @@ function renderLandingPage() {
   const heroDescription = el("p", "landing-hero-description");
   append(heroDescription, el("span", "landing-copy-desktop", "지금 겪는 상황에 맞춰 행동 전, 송금 직후, 계좌 정지 후 중 하나를 선택하세요.\n어느 단계에서 시작하든 같은 사건 엔진으로 이어집니다."), el("span", "landing-copy-mobile", "금융사고 전후의 흩어진 자료를\n증거와 공식 다음 행동으로 바꿉니다."));
   append(heroCopy, el("span", "landing-kicker", "금융사고 대응 코파일럿"), heroTitle, heroDescription);
-  const heroActions = el("div", "landing-hero-actions");
+  const heroActions = setAttrs(el("div", "landing-hero-actions"), { "data-onboarding-target": "home-actions" });
   append(
     heroActions,
     screenButton("행동 전 점검 시작", "before", "landing-button landing-button-primary", { "data-entry-flow": "before" }),
     screenButton("지급정지 소명 준비", "s00", "landing-button landing-button-secondary", { "data-entry-flow": "freeze" }),
   );
-  heroCopy.append(heroActions, el("p", "landing-hero-note", "법률·금융기관의 최종 판단을 대체하지 않습니다."));
+  heroCopy.append(heroActions, actionButton("처음이라면 사용 방법 보기", "open-onboarding", "landing-help-link"), el("p", "landing-hero-note", "법률·금융기관의 최종 판단을 대체하지 않습니다."));
 
   const heroVisual = el("aside", "landing-hero-visual");
   append(heroVisual, el("h2", "landing-visual-title", "하나의 사건 엔진"), el("p", "landing-visual-description", "입구는 달라도 결과 구조는 같습니다."));
@@ -1832,7 +2489,7 @@ function renderLandingPage() {
   stages.append(stagesInner);
   main.append(stages);
 
-  const engine = setAttrs(el("section", "landing-section landing-engine"), { id: "landing-engine" });
+  const engine = setAttrs(el("section", "landing-section landing-engine"), { id: "landing-engine", "data-onboarding-target": "common-engine" });
   const engineInner = el("div", "landing-container landing-engine-inner");
   const engineTitle = el("h2", "landing-engine-title");
   append(engineTitle, el("span", "landing-copy-desktop", "어느 단계에서 시작하든\n동일한 검토 구조로 정리됩니다."), el("span", "landing-copy-mobile", "어느 단계에서 시작하든\n같은 구조로 정리됩니다."));
@@ -1858,7 +2515,7 @@ function renderLandingPage() {
     append(card, el("span", "landing-boundary-icon", icon), el("strong", "landing-boundary-card-title", title), el("p", "landing-boundary-card-description", description), el("span", "landing-boundary-mobile-copy", `${icon} ${description.split(" · 공식 다음 행동")[0]}`));
     boundaryGrid.append(card);
   });
-  const shieldEntry = el("article", "landing-shield-entry");
+  const shieldEntry = setAttrs(el("article", "landing-shield-entry"), { "data-onboarding-target": "shield-entry" });
   append(
     shieldEntry,
     el("div", "landing-shield-copy", el("span", "landing-shield-kicker", "SHIELD · 불법 추심 대응"), el("strong", "", "불법 추심 대응도 같은 기록 구조로 연결합니다."), el("p", "", "반복 연락·협박·추가 송금 요구를 기록하고 공식 도움으로 이어집니다.")),
@@ -1868,7 +2525,7 @@ function renderLandingPage() {
   boundary.append(boundaryInner);
   main.append(boundary);
 
-  page.append(main);
+  page.append(main, renderOnboarding());
   return page;
 }
 
@@ -1886,8 +2543,8 @@ function renderActualS00() {
   body.append(cases);
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("사건 A로 체험 시작", "select-case", { "data-case-id": "danger-transfer" }), figmaSecondary("사건 B 보기", "g01", { "data-action": "select-case", "data-case-id": "abstain" }));
-  body.append(actions, el("p", "figma-bottom-note", "실제 개인정보 대신 제공된 합성 샘플만 사용합니다."));
-  return figmaMobileFrame("게스트 체험", body, "figma-gate-mobile");
+  body.append(actions, actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }), el("p", "figma-bottom-note", "실제 개인정보 대신 제공된 합성 샘플만 사용합니다."));
+  return append(figmaMobileFrame("게스트 체험", body, "figma-gate-mobile"), renderServiceTour());
 }
 
 function renderActualG01() {
@@ -1921,7 +2578,7 @@ function renderActualG01() {
     const sample = el("div", "figma-sample-message", el("p", "", FIGMA_SAMPLE_TEXT), actionButton("샘플 자동 입력", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }));
     body.append(sample, el("div", "figma-url-note", "URL은 열지 않고 문자열만 확인합니다."), figmaPrimary("위험 신호 분석", "analyze-sample"));
   }
-  return figmaMobileFrame("1 / 7", body, "figma-gate-mobile");
+  return append(figmaMobileFrame("1 / 7", body, "figma-gate-mobile"), renderServiceTour());
 }
 
 function renderActualG02() {
@@ -1937,7 +2594,7 @@ function renderActualG02() {
   if (state.variant === "INJECTION_DETECTED" || state.variant === "ABSTAIN") actions.append(screenButton("입력 원문 다시 확인", "g01", "button figma-secondary"));
   actions.append(figmaSecondary("결과만 확인하고 종료", "s00"));
   body.append(actions, el("p", "figma-bottom-note", state.notice || "규칙 기반 점검은 사기·결백 여부를 확정하지 않습니다."));
-  return figmaMobileFrame("1 / 7", body, "figma-gate-mobile figma-result-mobile");
+  return append(figmaMobileFrame("1 / 7", body, "figma-gate-mobile figma-result-mobile"), renderServiceTour());
 }
 
 function renderActualG03() {
@@ -1961,7 +2618,7 @@ function renderActualG03() {
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("위 규칙에 동의하고 사건 생성", "create-case"), figmaSecondary("동의하지 않고 나가기", "s00"));
   body.append(actions);
-  return figmaMobileFrame("2 / 7", body, "figma-gate-mobile figma-consent-mobile");
+  return append(figmaMobileFrame("2 / 7", body, "figma-gate-mobile figma-consent-mobile"), renderServiceTour());
 }
 
 function renderActualC01Mobile() {
@@ -1972,7 +2629,7 @@ function renderActualC01Mobile() {
     body.append(figmaEvidenceList([["원문 자료", record.evidence.length + "건 연결"], ["확인할 항목", record.facts.length + "건 · 원문과 대조 필요"], ["보관 범위", "현재 탭에서만 작업"], ["최종 결과물", "선택한 원문과 확인 내용이 담긴 소명팩"]], "현재 사건"));
     body.append(figmaCallout("작업 보관 안내", "서버에 저장하지 않습니다. 새로고침 전에 자료를 내려받아 주세요.", "info"));
     body.append(el("div", "figma-mobile-actions", recordViewButton("자료 상태 확인", "frozen", "c02", true), recordViewButton("사건 개요 보기", "frozen", "c01")));
-    return figmaMobileFrame("사건 시작", body, "figma-case-mobile");
+    return append(figmaMobileFrame("사건 시작", body, "figma-case-mobile"), renderServiceTour());
   }
   const body = el("div", "figma-screen-content figma-case-content");
   body.append(figmaAlert("CASE", "사건 자료를 확인하세요"), figmaEvidenceList([
@@ -1985,11 +2642,11 @@ function renderActualC01Mobile() {
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("자료 상태 확인", "advance-workspace", { "data-next-screen": "c02" }), figmaSecondary("나중에 확인", "workspace", { "data-case-screen": "c01" }));
   body.append(actions);
-  return figmaMobileFrame("1 / 7", body, "figma-case-mobile");
+  return append(figmaMobileFrame("1 / 7", body, "figma-case-mobile"), renderServiceTour());
 }
 
 function renderActualC03Mobile() {
-  if (!state.showReference) return renderRecordWorkspace("frozen", "c03");
+  if (!state.showReference) return append(renderRecordWorkspace("frozen", "c03"), renderServiceTour());
   const body = el("div", "figma-screen-content figma-case-content");
   body.append(figmaAlert("원문·사실 확인", "원문과 정리된 항목을 비교하세요"), figmaEvidenceList([
     ["금전 요구", "신고 취소를 조건으로 500,000원을 요구"],
@@ -2002,7 +2659,7 @@ function renderActualC03Mobile() {
   const desktop = figmaPrimary("원문 확인하기", "screen", { "data-screen": "workspace", "data-case-screen": "c03" });
   append(actions, desktop, figmaSecondary("다음에 확인", "workspace", { "data-case-screen": "c03" }));
   body.append(actions);
-  return figmaMobileFrame("1 / 7", body, "figma-case-mobile");
+  return append(figmaMobileFrame("1 / 7", body, "figma-case-mobile"), renderServiceTour());
 }
 
 function workspaceRail(active) {
@@ -2132,9 +2789,10 @@ function renderBeforeCapture() {
   body.append(sample, el("div", "before-capture-privacy", "업로드한 원문은 결과 확인 후 보관하지 않습니다."));
   body.append(actionButton(state.busy ? "분석 중…" : "메시지 점검하기", "before-check", "button figma-primary before-capture-primary", { disabled: state.busy, "aria-busy": String(state.busy) }));
   body.append(actionButton("이미 계좌가 막혔다면  계좌 정지 후 →", "before-freeze", "before-capture-alt"));
+  body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "before" }));
   body.append(el("p", "before-capture-disclaimer", "위험 신호 참고용 · 사기 여부를 확정하지 않습니다."));
   if (state.beforeNotice) body.append(setAttrs(el("p", "before-capture-notice", state.beforeNotice), { role: "status", "aria-live": "polite" }));
-  return beforeMobileFrame("BEFORE", body, "before-capture-mobile");
+  return append(beforeMobileFrame("BEFORE", body, "before-capture-mobile"), renderServiceTour());
 }
 
 function renderBeforeResult() {
@@ -2198,7 +2856,8 @@ function renderBeforeResult() {
   if (analysis.source === "file") body.append(el("p", "before-result-source-note", `프론트 MVP 데모 · ${analysis.fileName}을 선택한 입력으로 처리했습니다. 실제 OCR 연동 전 단계입니다.`));
   if (analysis.runtimeNotice) body.append(setAttrs(el("p", "before-result-runtime-note", analysis.runtimeNotice), { role: "status", "aria-live": "polite" }));
   body.append(el("p", "before-result-note", "위험 신호 참고용 · 최종 확인은 공식 채널과 상담으로 진행하세요."));
-  return beforeMobileFrame("RESULT", body, "before-result-mobile");
+  body.append(actionButton("BEFORE 사용 방법 다시 보기", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "before" }));
+  return append(beforeMobileFrame("RESULT", body, "before-result-mobile"), renderServiceTour());
 }
 
 function figmaDesktopEvidence(label, value, source = "AI_EXTRACTED") {
@@ -2344,7 +3003,7 @@ function renderActualC08Desktop() {
 }
 
 function renderActualCaseDesktop(screen) {
-  if (!state.showReference) return renderRecordWorkspace("frozen", screen);
+  if (!state.showReference) return append(renderRecordWorkspace("frozen", screen), renderServiceTour());
   if (screen === "c01") return renderActualC01Desktop();
   if (screen === "c02") return renderActualC02Desktop();
   if (screen === "c03") return renderActualC03Desktop();
@@ -2398,7 +3057,7 @@ function render() {
   else if (state.screen === "before-result") page = renderBeforeResult();
   else if (state.screen === "after") page = renderAfterFlow();
   else if (state.screen === "shield") page = renderShieldFlow();
-  else if (state.screen === "shield-workspace") page = renderRecordWorkspace("shield", state.shieldView);
+  else if (state.screen === "shield-workspace") page = append(renderRecordWorkspace("shield", state.shieldView), renderServiceTour());
   else if (state.screen === "workspace") page = renderActualWorkspace();
   else if (state.screen === "c01") page = renderActualC01Mobile();
   else if (state.screen === "c03") page = renderActualC03Mobile();
@@ -2416,6 +3075,25 @@ function render() {
     appMain.replaceChildren(shell);
   }
   updateNav();
+  if (state.screen === "after") window.requestAnimationFrame(() => window.scrollTo(0, 0));
+  if (state.onboardingOpen && state.onboardingFocusPending) {
+    state.onboardingFocusPending = false;
+    window.requestAnimationFrame(() => {
+      const step = ONBOARDING_STEPS[state.onboardingStep] || ONBOARDING_STEPS[0];
+      const target = document.querySelector(step.target);
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      document.querySelector(".onboarding-next")?.focus();
+    });
+  } else if (state.serviceTourOpen && state.serviceTourFocusPending) {
+    state.serviceTourFocusPending = false;
+    window.requestAnimationFrame(() => {
+      const tour = SERVICE_TOUR_STEPS[state.serviceTourKind];
+      const step = tour?.steps[state.serviceTourStep] || tour?.steps[0];
+      const target = step ? document.querySelector(step.target) : null;
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      document.querySelector(".service-tour-guide .onboarding-next")?.focus();
+    });
+  }
 }
 
 function selectCase(id, goToInput = true) {
@@ -2458,6 +3136,8 @@ document.addEventListener("click", (event) => {
   const screenTarget = event.target.closest("[data-screen]");
   if (screenTarget) {
     event.preventDefault();
+    if (state.onboardingOpen) dismissOnboarding();
+    if (state.serviceTourOpen) dismissServiceTour();
     if (screenTarget.dataset.workspaceStep) {
       const targetIndex = workspaceStepIndex(screenTarget.dataset.caseScreen);
       const activeScreen = state.screen === "workspace" ? state.workspaceScreen : state.screen;
@@ -2484,8 +3164,53 @@ document.addEventListener("click", (event) => {
   if (!target) return;
   event.preventDefault();
   const action = target.dataset.action;
+  const serviceTourActions = ["open-service-tour", "service-tour-next", "service-tour-prev", "service-tour-skip"];
+  if (state.serviceTourOpen && !serviceTourActions.includes(action)) dismissServiceTour();
   if (handleRecordAction(target)) return;
-  if (action === "toggle-home-nav") {
+  if (action === "open-onboarding") {
+    openOnboarding();
+  } else if (action === "onboarding-next") {
+    if (state.onboardingStep >= ONBOARDING_STEPS.length - 1) {
+      dismissOnboarding();
+      render();
+    }
+    else {
+      state.onboardingStep += 1;
+      state.onboardingFocusPending = true;
+      render();
+    }
+  } else if (action === "onboarding-prev") {
+    if (state.onboardingStep > 0) {
+      state.onboardingStep -= 1;
+      state.onboardingFocusPending = true;
+      render();
+    }
+  } else if (action === "onboarding-skip") {
+    dismissOnboarding();
+    render();
+  } else if (action === "open-service-tour") {
+    openServiceTour(target.dataset.serviceTourKind || serviceTourKindForScreen(state.screen));
+  } else if (action === "service-tour-next") {
+    const tour = SERVICE_TOUR_STEPS[state.serviceTourKind];
+    if (!tour) return;
+    if (state.serviceTourStep >= tour.steps.length - 1) {
+      dismissServiceTour();
+      render();
+    } else {
+      state.serviceTourStep += 1;
+      state.serviceTourFocusPending = true;
+      render();
+    }
+  } else if (action === "service-tour-prev") {
+    if (state.serviceTourStep > 0) {
+      state.serviceTourStep -= 1;
+      state.serviceTourFocusPending = true;
+      render();
+    }
+  } else if (action === "service-tour-skip") {
+    dismissServiceTour();
+    render();
+  } else if (action === "toggle-home-nav") {
     state.homeNavOpen = !state.homeNavOpen;
     render();
   } else if (action === "scroll-home") {
@@ -2550,6 +3275,60 @@ document.addEventListener("click", (event) => {
     render();
   } else if (action === "before-check") {
     runBeforeAnalysis();
+  } else if (action === "after-sample") {
+    state.afterData = createAfterTransferData();
+    state.afterData.proofName = "송금확인증_합성샘플.png";
+    state.afterStep = 1;
+    state.afterNotice = "합성 사건을 불러왔습니다. 실제 금융회사·수사기관 연락은 실행하지 않습니다.";
+    writeHash();
+    render();
+  } else if (action === "after-toggle-sequence") {
+    const key = target.dataset.afterSequence;
+    if (key && Object.hasOwn(state.afterData.sequence, key)) {
+      state.afterData.sequence[key] = !state.afterData.sequence[key];
+      render();
+    }
+  } else if (action === "after-toggle-fact") {
+    const key = target.dataset.afterFact;
+    const nextStatus = { confirmed: "edit", edit: "needs", needs: "confirmed" };
+    if (key && Object.hasOwn(state.afterData.facts, key)) {
+      state.afterData.facts[key] = nextStatus[state.afterData.facts[key]] || "confirmed";
+      render();
+    }
+  } else if (action === "after-original-link") {
+    state.afterNotice = "원본 송금확인증 영역을 연결했습니다. 원본 파일은 별도로 보존하세요.";
+    render();
+  } else if (action === "after-go-contact") {
+    state.afterStep = 3;
+    state.afterNotice = "공식 연락 결과 기록 화면으로 이동했습니다.";
+    writeHash();
+    render();
+  } else if (action === "after-go-board") {
+    state.afterStep = 6;
+    state.afterNotice = "대응 현황 보드로 돌아갔습니다.";
+    writeHash();
+    render();
+  } else if (action === "after-shield") {
+    state.entryFlow = "shield";
+    navigate("shield");
+  } else if (action === "after-freeze") {
+    state.entryFlow = "freeze";
+    navigate("s00");
+  } else if (action === "after-download") {
+    let reportWindow = null;
+    try {
+      reportWindow = window.open("", "_blank");
+      if (!reportWindow) throw new Error("popup-blocked");
+      reportWindow.document.open();
+      reportWindow.document.write(afterReportPrintMarkup());
+      reportWindow.document.close();
+      reportWindow.focus();
+      window.setTimeout(() => reportWindow.print(), 120);
+      state.afterNotice = "인쇄 창을 열었습니다. 대상 프린터에서 ‘PDF로 저장’을 선택하세요.";
+    } catch {
+      state.afterNotice = "PDF 인쇄 창이 차단되었습니다. 브라우저의 팝업을 허용한 뒤 다시 시도해 주세요.";
+    }
+    render();
   } else if (action === "after-next") {
     state.afterStep = Math.min(AFTER_STEPS.length - 1, state.afterStep + 1);
     state.afterNotice = "";
@@ -2599,6 +3378,14 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.addEventListener("keydown", (event) => {
+  if ((!state.onboardingOpen && !state.serviceTourOpen) || event.key !== "Escape") return;
+  event.preventDefault();
+  if (state.onboardingOpen) dismissOnboarding();
+  if (state.serviceTourOpen) dismissServiceTour();
+  render();
+});
+
 document.addEventListener("input", (event) => {
   if (event.target.id === "before-message") {
     state.beforeText = event.target.value.slice(0, 8000);
@@ -2614,12 +3401,65 @@ document.addEventListener("input", (event) => {
     state.message = event.target.value.slice(0, 8000);
     const count = document.querySelector(".char-count");
     if (count) count.textContent = `${state.message.length.toLocaleString()} / 8,000`;
+    return;
+  }
+  if (event.target.dataset.afterContactField) {
+    const field = event.target.dataset.afterContactField;
+    if (Object.hasOwn(state.afterData.contact, field)) state.afterData.contact[field] = event.target.value.slice(0, 120);
   }
 });
 
 document.addEventListener("change", (event) => {
   if (event.target.dataset.consentItem) {
     state.consentItems[event.target.dataset.consentItem] = event.target.checked;
+    return;
+  }
+  if (event.target.dataset.afterSituation) {
+    const key = event.target.dataset.afterSituation;
+    if (Object.hasOwn(state.afterData.situation, key)) state.afterData.situation[key] = event.target.checked;
+    return;
+  }
+  if (event.target.dataset.afterContact) {
+    const field = event.target.dataset.afterContact;
+    if (Object.hasOwn(state.afterData.contact, field)) state.afterData.contact[field] = event.target.value;
+    render();
+    return;
+  }
+  if (event.target.dataset.afterEvidence) {
+    const key = event.target.dataset.afterEvidence;
+    if (Object.hasOwn(state.afterData.evidence, key)) state.afterData.evidence[key] = event.target.checked ? "secured" : "missing";
+    render();
+    return;
+  }
+  if (event.target.dataset.afterBoard) {
+    const key = event.target.dataset.afterBoard;
+    if (Object.hasOwn(state.afterData.board, key)) state.afterData.board[key] = event.target.checked;
+    render();
+    return;
+  }
+  if (event.target.id === "after-transfer-proof") {
+    const file = event.target.files?.[0];
+    state.afterData.proofName = "";
+    if (!file) {
+      state.afterNotice = "송금확인증을 선택해 주세요.";
+      render();
+      return;
+    }
+    if (!["image/png", "image/jpeg"].includes(file.type)) {
+      event.target.value = "";
+      state.afterNotice = "송금확인증은 PNG 또는 JPG 파일만 선택해 주세요.";
+      render();
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      event.target.value = "";
+      state.afterNotice = "송금확인증은 10MB 이하로 선택해 주세요.";
+      render();
+      return;
+    }
+    state.afterData.proofName = file.name;
+    state.afterNotice = "송금확인증을 선택했습니다.";
+    render();
     return;
   }
   if (event.target.id === "before-screenshot-input") {
@@ -2665,10 +3505,23 @@ document.addEventListener("submit", (event) => {
 
 window.addEventListener("hashchange", () => {
   parseHash();
+  if (state.screen === "home" && !hasSeenOnboarding()) {
+    state.onboardingOpen = true;
+    state.onboardingFocusPending = true;
+  } else {
+    if (state.onboardingOpen) dismissOnboarding(false);
+    maybeOpenServiceTour(state.screen);
+  }
   render();
 });
 
 parseHash();
+if (state.screen === "home" && !hasSeenOnboarding()) {
+  state.onboardingOpen = true;
+  state.onboardingFocusPending = true;
+} else {
+  maybeOpenServiceTour(state.screen);
+}
 render();
 window.scrollTo(0, 0);
 window.addEventListener("load", () => window.setTimeout(() => window.scrollTo(0, 0), 0));
