@@ -1079,21 +1079,6 @@ a { color: inherit; }
 }
 
 /* First-use guide: a non-blocking coach mark that keeps the prototype usable while explaining it. */
-.landing-help-button, .prototype-nav-help {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0 12px;
-  border: 0;
-  background: transparent;
-  color: #175cd3;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-.landing-help-button:hover, .prototype-nav-help:hover { color: #1249a8; text-decoration: underline; text-underline-offset: 4px; }
 .landing-help-link {
   display: inline-flex;
   align-items: center;
@@ -1179,7 +1164,6 @@ a { color: inherit; }
 }
 
 @media (max-width: 680px) {
-  .landing-help-button, .prototype-nav-help { min-height: 38px; font-size: 12px; }
   .landing-help-link { justify-content: center; width: 100%; margin-top: 4px; }
   .onboarding-guide { top: 80px; right: 12px; left: 12px; width: auto; }
   .onboarding-guide-body { padding: 15px 16px 2px; }

@@ -2378,7 +2378,7 @@ function landingNavigation() {
   LANDING_NAV_ITEMS.forEach((item) => primary.append(landingNavItem(item)));
 
   const tools = el("div", "landing-nav-tools");
-  tools.append(actionButton("사용 방법", "open-onboarding", "landing-help-button"), landingNavCta("지급정지 소명 시작"));
+  tools.append(landingNavCta("지급정지 소명 시작"));
 
   const menuToggle = button("", "landing-menu-toggle", {
     "data-action": "toggle-home-nav",
@@ -2430,9 +2430,8 @@ function prototypeNavigation() {
     }));
   });
 
-  const help = actionButton("사용 방법", "open-onboarding", "prototype-nav-help");
   const cta = screenButton("지급정지 소명 시작", "s00", "prototype-nav-cta", { "data-entry-flow": "freeze" });
-  inner.append(brand, links, help, cta);
+  inner.append(brand, links, cta);
   header.append(inner);
   return header;
 }
