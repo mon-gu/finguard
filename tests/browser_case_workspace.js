@@ -28,7 +28,7 @@ async (page) => {
   for (const box of await page.getByRole('checkbox').all()) await box.check();
   await page.getByRole('button', { name: '동의하고 자료 정리 시작', exact: true }).click();
   await page.getByRole('button', { name: '자료 상태 확인', exact: true }).click();
-  await page.getByRole('button', { name: '합성 예시 3건 추가', exact: true }).click();
+  await page.getByRole('button', { name: '예시 자료 3건 추가', exact: true }).click();
   check(await page.locator('.record-source-button').count() === 4, 'Gate original plus three demo records');
   await page.locator('.record-source-button').filter({ hasText: '중고 물품 주문' }).click();
   const original = await page.locator('.record-original').innerText();
@@ -67,7 +67,7 @@ async (page) => {
   await page.getByRole('button', { name: '불법 추심 대응 보기', exact: true }).click();
   await page.getByRole('button', { name: '연락 한 건 기록하기', exact: true }).click();
   check(page.url().endsWith('#shield-workspace/s02'), 'Shield has its own workspace');
-  await page.getByRole('button', { name: '합성 예시 3건 추가', exact: true }).click();
+  await page.getByRole('button', { name: '예시 자료 3건 추가', exact: true }).click();
   check(await page.locator('.record-source-button').count() === 3, 'Shield records isolated from Frozen');
   await page.locator('.record-source-button').filter({ hasText: '제삼자 언급' }).click();
   check((await page.locator('.record-signals').innerText()).includes('가족'), 'Shield signals grounded in actual source');

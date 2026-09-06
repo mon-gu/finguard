@@ -142,6 +142,14 @@ class ServerContractTests(unittest.TestCase):
         for marker in ("onboarding-guide", "service-tour-guide", "service-guide-link", "onboarding-focus", "data-placement", "coach-arrow"):
             self.assertIn(marker, styles_css)
 
+    def test_example_entry_terms_are_user_facing(self) -> None:
+        app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
+        workspace_js = (WEB_ROOT / "case-workspace.js").read_text(encoding="utf-8")
+        for marker in ("예시 사건으로 체험", "예시 메시지로 바로 점검", "예시 메시지 넣기", "예시 자료 3건 추가", "이 화면에서만 작업"):
+            self.assertIn(marker, app_js + workspace_js)
+        for legacy in ("예시로 바로 점검", "예시로 바꾸기", "합성 예시 3건 추가", "게스트 체험"):
+            self.assertNotIn(legacy, app_js + workspace_js)
+
     def test_guides_open_only_from_explicit_controls(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         self.assertIn('action === "open-onboarding"', app_js)

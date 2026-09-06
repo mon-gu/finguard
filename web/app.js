@@ -382,7 +382,7 @@ const SERVICE_TOUR_STEPS = {
   frozen: {
     label: "계좌가 막힌 후 · 설명자료",
     steps: [
-      { target: ".figma-home-cases, .figma-entry-tabs, .record-rail", title: "예시 또는 내 자료로 시작합니다", description: "처음에는 준비된 예시를 눌러 전체 흐름을 확인하고, 필요하면 받은 메시지를 직접 확인합니다. 실제 개인정보 대신 합성 예시를 사용하세요." },
+      { target: ".figma-home-cases, .figma-entry-tabs, .record-rail", title: "예시 또는 내 자료로 시작합니다", description: "처음에는 준비된 예시를 눌러 전체 흐름을 확인하고, 필요하면 받은 메시지를 직접 확인합니다. 실제 개인정보 대신 준비된 예시를 사용하세요." },
       { target: ".figma-mobile-actions, .figma-message-form, .figma-result-content, .record-content", title: "받은 내용과 확인 항목을 차례로 봅니다", description: "받은 메시지는 그대로 보존하고, 사람이 확인한 사실과 수정 이력을 따로 남깁니다. AI가 자동으로 확정하지 않습니다." },
       { target: ".record-rail, .figma-consent-content, .figma-result-content, .figma-entry-tabs", title: "왼쪽 메뉴에서 다음 단계를 엽니다", description: "개요 → 자료 수집 → 받은 내용 확인 → 거래 연결 → 확인할 문제 → 시간순 기록 → 보고서 순서입니다." },
       { target: ".record-report-grid, .figma-mobile-actions, .figma-consent-content, .record-content", title: "정리한 결과를 확인하고 보관합니다", description: "선택한 자료와 확인 이력이 담긴 결과를 내려받거나 인쇄해 보관할 수 있습니다. 기관에 자동 제출하지 않습니다." },
@@ -522,7 +522,7 @@ const SERVICE_SCREEN_TOURS = {
   "after-1": {
     label: "송금 직후 · 송금 정보",
     steps: [
-      { target: ".after-upload-card", title: "송금확인증을 선택하세요", description: "PNG·JPG 송금확인증을 선택하면 이 사건의 증거로 확인할 수 있습니다. 실제 개인정보 대신 합성자료를 사용하세요." },
+      { target: ".after-upload-card", title: "송금확인증을 선택하세요", description: "PNG·JPG 송금확인증을 선택하면 이 사건의 자료로 확인할 수 있습니다. 실제 개인정보 대신 준비된 예시 자료를 사용하세요." },
       { target: ".after-transfer-ai-card", title: "AI가 읽은 값을 확인하세요", description: "금액·시각·수취인 같은 추출값은 초안입니다. 원본과 대조한 뒤 다음 단계로 넘어갑니다." },
       { target: ".after-transfer-actions", title: "긴급 대응 순서를 만드세요", description: "현재 상황을 확인한 뒤 추가 송금 중단과 공식 연락 순서를 생성합니다." },
     ],
@@ -582,7 +582,7 @@ const SERVICE_SCREEN_TOURS = {
   "frozen-g01": {
     label: "계좌가 막힌 후 · 메시지 확인",
     steps: [
-      { target: ".figma-demo-primary", title: "예시로 먼저 체험하세요", description: "실제 개인정보 없이 준비된 예시로 위험 신호와 다음 행동을 바로 확인합니다." },
+      { target: ".figma-demo-primary", title: "예시 메시지로 먼저 확인하세요", description: "실제 개인정보 없이 준비된 예시 메시지로 위험 신호와 다음 행동을 바로 확인합니다." },
       { target: ".figma-entry-tabs", title: "내 자료로 확인할 수도 있습니다", description: "받은 메시지를 붙여넣거나 스크린샷을 참고할 수 있습니다. 이미지 내용을 자동으로 읽는 기능은 아직 준비 중입니다." },
       { target: ".figma-input-primary", title: "메시지 점검하기를 누르세요", description: "결과는 참고용 초안입니다. 원문과 공식 채널을 직접 확인해야 합니다." },
     ],
@@ -700,7 +700,7 @@ const SERVICE_SCREEN_TOURS = {
   "shield-workspace-s02": {
     label: "불법 추심 · 연락 기록",
     steps: [
-      { target: ".record-intake-layout", title: "연락 원문을 기록하세요", description: "발신자·시각·채널·요구 내용을 원문 그대로 입력합니다. 실제 개인정보 대신 합성자료를 사용하세요." },
+      { target: ".record-intake-layout", title: "연락 원문을 기록하세요", description: "발신자·시각·채널·요구 내용을 원문 그대로 입력합니다. 실제 개인정보 대신 준비된 예시 자료를 사용하세요." },
       { target: "#record-intake", title: "원문을 추가하고 단서를 확인하세요", description: "원문을 추가하면 위험 신호 화면에서 협박·기한·추가 요구를 문장 단위로 대조합니다." },
     ],
   },
@@ -1504,7 +1504,7 @@ function renderAfter06() {
 
 function afterTransferReportPreview() {
   const preview = el("article", "after-report-preview");
-  append(preview, el("strong", "after-report-brand", "FinGuard"), el("h2", "after-report-title", "금융사고 초기 대응 기록팩"), el("small", "after-report-meta", "사건 FG-AF-260906-001 · 합성 데모"));
+  append(preview, el("strong", "after-report-brand", "FinGuard"), el("h2", "after-report-title", "금융사고 초기 대응 기록팩"), el("small", "after-report-meta", "사건 FG-AF-260906-001 · 예시 데모"));
   [
     ["1. 사건 개요", "송금 14:22 · 3,000,000원 · 피해 인지 14:31"],
     ["2. 송금 사실", "한빛은행 → 새길은행 · 김○○ · ****4821"],
@@ -1551,7 +1551,7 @@ function afterReportPrintMarkup() {
     ["5. 증거 색인", "E-001 송금확인증 · E-002 메시지 · E-004 통화기록"],
     ["6. 아직 부족한 정보", "경찰 접수번호 · 전체 통화기록 · 추가 요청자료"],
   ];
-  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>FinGuard 금융사고 초기 대응 기록팩</title><style>body{font-family:Arial,sans-serif;color:#101828;max-width:760px;margin:48px auto;padding:0 28px;line-height:1.6}h1{font-size:26px;margin:0 0 6px}p{color:#667085}.row{padding:16px 0;border-top:1px solid #d0d5dd}.row strong,.row span{display:block}.row strong{font-size:14px}.row span{color:#475467;margin-top:4px}.meta{font-size:12px;color:#667085;margin-bottom:28px}.notice{margin-top:32px;padding:14px;background:#f8fafc;color:#667085;font-size:12px}</style></head><body><h1>금융사고 초기 대응 기록팩</h1><p class="meta">사건 FG-AF-260906-001 · 합성 데모</p>${rows.map(([title, value]) => `<div class="row"><strong>${afterEscapeHtml(title)}</strong><span>${afterEscapeHtml(value)}</span></div>`).join("")}<p class="notice">모든 사실은 원본 증거 ID와 연결됩니다. 본 기록팩은 회수·환급·지급정지를 판단하거나 보장하지 않습니다.</p></body></html>`;
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>FinGuard 금융사고 초기 대응 기록팩</title><style>body{font-family:Arial,sans-serif;color:#101828;max-width:760px;margin:48px auto;padding:0 28px;line-height:1.6}h1{font-size:26px;margin:0 0 6px}p{color:#667085}.row{padding:16px 0;border-top:1px solid #d0d5dd}.row strong,.row span{display:block}.row strong{font-size:14px}.row span{color:#475467;margin-top:4px}.meta{font-size:12px;color:#667085;margin-bottom:28px}.notice{margin-top:32px;padding:14px;background:#f8fafc;color:#667085;font-size:12px}</style></head><body><h1>금융사고 초기 대응 기록팩</h1><p class="meta">사건 FG-AF-260906-001 · 예시 데모</p>${rows.map(([title, value]) => `<div class="row"><strong>${afterEscapeHtml(title)}</strong><span>${afterEscapeHtml(value)}</span></div>`).join("")}<p class="notice">모든 사실은 원본 증거 ID와 연결됩니다. 본 기록팩은 회수·환급·지급정지를 판단하거나 보장하지 않습니다.</p></body></html>`;
 }
 
 function afterDesktopStepNavigation(activeIndex) {
@@ -1596,7 +1596,7 @@ function afterDesktopSummary(activeIndex) {
     summary,
     el("span", "after-summary-kicker", "현재 사건"),
     el("h2", "after-summary-title", "송금 직후 대응"),
-    el("p", "after-summary-copy", "합성 데모 · 실제 연락이나 지급정지는 실행하지 않습니다."),
+    el("p", "after-summary-copy", "예시 데모 · 실제 연락이나 지급정지는 실행하지 않습니다."),
     afterTransferInfoRows([
       ["사건", "FG-AF-260906-001"],
       ["송금 금액", "3,000,000원"],
@@ -1681,7 +1681,7 @@ function renderShieldFlow() {
   actions.append(recordAction(index === 2 ? "상담 준비 자료 만들기" : "연락 한 건 기록하기", "record-open", "shield", { "data-record-view": index === 2 ? "s07" : "s02" }, true));
   if (index < SHIELD_STEPS.length - 1) actions.append(actionButton("대응 안내 계속 보기", "shield-next", "button figma-secondary"));
   else actions.append(screenButton("계좌도 막혔다면 설명자료 준비", "s00", "button figma-secondary", { "data-entry-flow": "freeze" }));
-  if (index === 0) actions.append(recordAction("합성 연락 3건으로 체험", "record-demo", "shield"));
+  if (index === 0) actions.append(recordAction("예시 연락 3건으로 체험", "record-demo", "shield"));
   if (index > 0) actions.append(actionButton("이전 단계", "shield-back", "button figma-secondary"));
   else actions.append(screenButton("홈으로 돌아가기", "home", "button figma-secondary"));
   body.append(actions);
@@ -2029,7 +2029,7 @@ function renderS00() {
   const body = el("div", "phone-content");
   append(body, badge("금융 행동 전 마지막 확인", COLORS.blue), phoneTitle("계좌가 정지됐고,\n돈을 보내면 취소된다는 연락을 받았나요?", "FinGuard는 메시지의 위험 신호를 먼저 보여주고, 원문을 사건 증거로 전환할지 선택하게 합니다."));
   const sampleTitle = el("div", "phone-section-heading");
-  append(sampleTitle, el("strong", "", "바로 확인해보기"), el("span", "", "합성 샘플"));
+  append(sampleTitle, el("strong", "", "바로 확인해보기"), el("span", "", "준비된 예시"));
   body.append(sampleTitle);
   const cases = el("div", "sample-case-list");
   DEMO_CASES.slice(0, 3).forEach((item) => {
@@ -2086,7 +2086,7 @@ function renderG01() {
   form.append(formFooter);
   body.append(form);
   const demoLabel = el("div", "phone-section-heading");
-  append(demoLabel, el("strong", "", "상황 바로 보기"), el("span", "", "합성 샘플"));
+  append(demoLabel, el("strong", "", "상황 바로 보기"), el("span", "", "준비된 예시"));
   body.append(demoLabel);
   const demoList = el("div", "demo-chip-list");
   DEMO_CASES.forEach((item) => demoList.append(actionButton(item.title, "sample", "demo-chip", { "data-case-id": item.id })));
@@ -2895,8 +2895,8 @@ function renderActualS00() {
   body.append(cases);
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("예시 사건으로 체험", "select-case", { "data-case-id": "danger-transfer" }), figmaSecondary("다른 사례 보기", "g01", { "data-action": "select-case", "data-case-id": "abstain" }));
-  body.append(actions, el("p", "figma-bottom-note", "실제 개인정보 대신 제공된 합성 샘플만 사용합니다."), stageSwitchLinks("s00"), actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
-  return append(figmaMobileFrame("게스트 체험", body, "figma-gate-mobile"), renderServiceTour());
+  body.append(actions, el("p", "figma-bottom-note", "실제 개인정보 대신 준비된 예시만 사용합니다."), stageSwitchLinks("s00"), actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
+  return append(figmaMobileFrame("계좌가 막힌 후 시작", body, "figma-gate-mobile"), renderServiceTour());
 }
 
 function renderActualG01() {
@@ -2908,8 +2908,8 @@ function renderActualG01() {
   append(
     demo,
     figmaBadge("추천 시작", "figma-badge-blue"),
-    el("strong", "figma-demo-title", "예시 메시지로 먼저 체험"),
-    el("p", "figma-demo-copy", "실제 개인정보 없이 위험 신호와 다음 행동을 바로 확인합니다."),
+    el("strong", "figma-demo-title", "예시 메시지로 먼저 확인"),
+    el("p", "figma-demo-copy", "실제 개인정보 없이 준비된 예시 메시지로 위험 신호와 다음 행동을 바로 확인합니다."),
     el("p", "figma-demo-quote", FIGMA_SAMPLE_TEXT),
     actionButton("예시 메시지로 바로 점검", "analyze-sample", "button figma-primary figma-demo-primary"),
   );
@@ -2929,7 +2929,7 @@ function renderActualG01() {
     const textarea = setAttrs(el("textarea", "figma-message-textarea"), { id: "message", maxlength: 8000, placeholder: "의심 메시지 내용을 붙여넣으세요.", "aria-label": "점검할 받은 메시지" });
     textarea.value = state.message;
     form.append(textarea);
-    form.append(actionButton("예시로 바꾸기", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }));
+    form.append(actionButton("예시 메시지 넣기", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }));
     form.append(actionButton(state.busy ? "점검 중…" : "이 메시지 점검하기", "submit", "button figma-primary figma-input-primary", { type: "submit", disabled: state.busy }));
     body.append(form);
   } else {
@@ -2942,7 +2942,7 @@ function renderActualG01() {
     form.id = "gate-form";
     const textarea = setAttrs(el("textarea", "figma-message-textarea"), { id: "message", maxlength: 8000, placeholder: "스크린샷의 메시지 내용을 붙여넣으세요.", "aria-label": "스크린샷에서 확인한 메시지" });
     textarea.value = state.message;
-    form.append(textarea, actionButton("예시로 바꾸기", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }), actionButton(state.busy ? "점검 중…" : "이 메시지 점검하기", "submit", "button figma-primary figma-input-primary", { type: "submit", disabled: state.busy }));
+    form.append(textarea, actionButton("예시 메시지 넣기", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }), actionButton(state.busy ? "점검 중…" : "이 메시지 점검하기", "submit", "button figma-primary figma-input-primary", { type: "submit", disabled: state.busy }));
     body.append(form, el("div", "figma-url-note", "메시지 속 링크는 열지 않고 글자만 확인합니다."));
   }
   body.append(el("p", "figma-input-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 사건으로 선택한 자료에는 24시간 자동 삭제 정책이 적용됩니다."), actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
@@ -2979,7 +2979,7 @@ function renderActualG03() {
   append(evidence, figmaBadge("받은 메시지", "figma-badge-blue"), el("strong", "", "방금 점검한 메시지"), el("p", "", "받은 내용을 그대로 가져오고, 확인 내용과 수정 이력은 별도로 남깁니다."));
   body.append(evidence, el("h3", "figma-section-title", "자료 사용 범위 확인"));
   const checks = el("div", "figma-consent-list");
-  ["실제 개인정보 대신 합성 텍스트 자료만 사용합니다.", "사건으로 선택한 자료는 24시간 후 자동 삭제됩니다. 새로고침하면 현재 작업도 사라집니다.", "내려받을 내용과 받은 메시지는 직접 확인합니다. 기관에 자동 전송되지 않습니다."].forEach((label, index) => {
+    ["실제 개인정보 대신 준비된 예시 메시지만 사용합니다.", "사건으로 선택한 자료는 24시간 후 자동 삭제됩니다. 새로고침하면 현재 작업도 사라집니다.", "내려받을 내용과 받은 메시지는 직접 확인합니다. 기관에 자동 전송되지 않습니다."].forEach((label, index) => {
     const row = el("label", "figma-consent-item");
     const input = setAttrs(el("input"), { type: "checkbox", checked: state.consentItems[index + 1] === true, "data-consent-item": index + 1 });
     append(row, input, el("span", "", label));
@@ -2987,7 +2987,7 @@ function renderActualG03() {
   });
   body.append(checks);
   const summary = el("section", "figma-storage-summary");
-  append(summary, el("strong", "", "이번에 정리하는 것"), el("span", "", "선택한 합성 메시지 · 확인 내용 · 수정 이력"), el("strong", "", "보관 정책"), el("span", "", "사건으로 선택한 자료는 24시간 후 자동 삭제"), el("div", "figma-summary-divider"), el("strong", "", "하지 않는 것"), el("span", "", "자동 제출 · 계좌 막힘 해제"));
+  append(summary, el("strong", "", "이번에 정리하는 것"), el("span", "", "선택한 예시 메시지 · 확인 내용 · 수정 이력"), el("strong", "", "보관 정책"), el("span", "", "사건으로 선택한 자료는 24시간 후 자동 삭제"), el("div", "figma-summary-divider"), el("strong", "", "하지 않는 것"), el("span", "", "자동 제출 · 계좌 막힘 해제"));
   body.append(summary);
   if (state.notice) body.append(el("p", "figma-error-message", state.notice));
   const actions = el("div", "figma-mobile-actions");
@@ -3149,9 +3149,9 @@ function renderBeforeCapture() {
   append(
     firstDemo,
     figmaBadge("추천 시작", "figma-badge-blue"),
-    el("strong", "before-capture-first-demo-title", "예시로 30초 먼저 확인하세요"),
-    el("p", "before-capture-first-demo-copy", "실제 개인정보 없이 위험 신호와 지금 멈출 행동을 바로 확인합니다."),
-    actionButton("예시로 바로 점검", "before-check-example", "button figma-primary before-capture-demo-primary"),
+    el("strong", "before-capture-first-demo-title", "예시 메시지로 30초 확인"),
+    el("p", "before-capture-first-demo-copy", "준비된 예시 메시지로 위험 신호와 지금 멈출 행동을 바로 확인합니다."),
+    actionButton("예시 메시지로 바로 점검", "before-check-example", "button figma-primary before-capture-demo-primary"),
   );
   body.append(firstDemo, el("div", "before-capture-input-divider", "내 메시지로 확인하기"));
 
@@ -3178,8 +3178,8 @@ function renderBeforeCapture() {
   const sample = el("div", "before-capture-sample");
   const sampleCopy = el("div", "before-capture-sample-copy");
   append(sampleCopy, el("p", "", "예시: “30분 안에 입금하지 않으면…”"), el("p", "", "→ 시간 제한 + 금전 요구를 확인합니다."));
-  append(sample, sampleCopy, actionButton("예시를 입력창에 넣기", "before-example", "before-capture-sample-chip"));
-  body.append(sample, el("div", "before-capture-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 실제 개인정보 대신 합성 예시를 사용하세요."));
+  append(sample, sampleCopy, actionButton("예시 메시지 넣기", "before-example", "before-capture-sample-chip"));
+  body.append(sample, el("div", "before-capture-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 실제 개인정보 대신 준비된 예시 메시지를 사용하세요."));
   body.append(actionButton(state.busy ? "분석 중…" : "메시지 점검하기", "before-check", "button figma-primary before-capture-primary", { disabled: state.busy, "aria-busy": String(state.busy) }));
   body.append(actionButton("이미 계좌가 막혔다면  계좌가 막힌 후 →", "before-freeze", "before-capture-alt"));
   body.append(stageSwitchLinks("before"));
@@ -3664,7 +3664,7 @@ function renderActualCaseDesktop(screen) {
 
 function renderActualWorkspace() {
   if (state.showReference) {
-    const banner = el("section", "record-reference-bar", el("strong", "", "기존 화면 예시 · 합성 시나리오"), el("p", "", "아래 수치·기관 처리 상태는 기존 설계 예시입니다. 실제 작업 중인 사건과 별개이며, 자동 저장·전송되지 않습니다."), recordViewButton("실제 작업 중인 사건으로 돌아가기", "frozen", "c01", true));
+    const banner = el("section", "record-reference-bar", el("strong", "", "기존 화면 예시 · 준비된 시나리오"), el("p", "", "아래 수치·기관 처리 상태는 기존 설계 예시입니다. 실제 작업 중인 사건과 별개이며, 자동 저장·전송되지 않습니다."), recordViewButton("실제 작업 중인 사건으로 돌아가기", "frozen", "c01", true));
     return el("div", "record-reference-wrapper", banner, renderActualCaseDesktop(state.workspaceScreen || "c01"));
   }
   return renderActualCaseDesktop(state.workspaceScreen || "c01");
@@ -3926,10 +3926,10 @@ document.addEventListener("click", (event) => {
     runBeforeAnalysis();
   } else if (action === "after-sample") {
     state.afterData = createAfterTransferData();
-    state.afterData.proofName = "송금확인증_합성샘플.png";
+    state.afterData.proofName = "송금확인증_예시.png";
     state.afterStep = 1;
     state.afterMaxStep = 1;
-    state.afterNotice = "합성 사건을 불러왔습니다. 실제 금융회사·수사기관 연락은 실행하지 않습니다.";
+    state.afterNotice = "예시 사건을 불러왔습니다. 실제 금융회사·수사기관 연락은 실행하지 않습니다.";
     writeHash();
     render();
   } else if (action === "after-step") {

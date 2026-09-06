@@ -74,7 +74,7 @@ function recordField(label, name, value, options = {}) {
 function recordEmpty(title, detail, kind, view) {
   return el("section", "record-empty", el("h2", "", title), el("p", "", detail),
     recordViewButton("첫 자료 추가하기", kind, view, true),
-    recordAction("합성 예시 3건 추가", "record-demo", kind));
+    recordAction("예시 자료 3건 추가", "record-demo", kind));
 }
 function recordRail(kind, view) {
   const record = caseRecord(kind);
@@ -84,7 +84,7 @@ function recordRail(kind, view) {
   append(rail, el("div", "figma-rail-brand", el("span", "figma-rail-mark", "F"), brand),
     el("span", "figma-rail-caption", kind === "shield" ? "불법 추심 · 연락 기록" : "계좌가 막힌 후 · 설명자료"),
     el("strong", "figma-rail-case", kind === "shield" ? "추심 연락 기록" : "계좌가 막힌 후 자료 정리"),
-    el("span", "figma-rail-subtitle", "합성자료 체험 · 브라우저 내 작업"));
+    el("span", "figma-rail-subtitle", "예시 자료 · 이 화면에서만 작업"));
   const nav = setAttrs(el("nav", frozen ? "figma-rail-nav figma-stepper-nav" : "figma-rail-nav"), { "aria-label": kind === "shield" ? "불법 추심 업무 메뉴" : "사건 진행 단계" });
   if (frozen) {
     const activeIndex = workspaceStepIndex(view);
@@ -173,25 +173,25 @@ function recordIntake(kind, supplement = false) {
   const section = figmaDesktopSection(supplement ? "원문을 보완하세요" : kind === "shield" ? "연락 한 건 남기기" : "자료 추가", "추가한 원문은 수정하지 않습니다. 설명은 확인 화면에서 따로 남길 수 있습니다.");
   const form = setAttrs(el("form", "record-form"), { id: "record-intake", "data-record-kind": kind });
   const row = el("div", "record-form-row",
-    recordField("자료 이름", "title", draft.title, { required: true, maxlength: 100, placeholder: kind === "shield" ? "예: 가족 연락을 언급한 문자" : "예: 주문서 · 합성 주문 FG-DEMO-01" }),
+    recordField("자료 이름", "title", draft.title, { required: true, maxlength: 100, placeholder: kind === "shield" ? "예: 가족 연락을 언급한 문자" : "예: 주문서 · 예시 주문 FG-DEMO-01" }),
     recordField("자료 종류", "kind", draft.kind || (kind === "shield" ? "contact" : "order"), { choices: Object.entries(RECORD_KIND) }));
   const meta = el("div", "record-form-row",
     recordField("연락·거래 시각", "occurredAt", draft.occurredAt || localRecordDate(), { type: "datetime-local", required: true }),
-    recordField("자료 출처 / 채널", "source", draft.source, { required: true, maxlength: 100, placeholder: "예: 합성 문자 · 판매내역" }));
-  const original = recordField("원문 내용", "text", draft.text, { multiline: true, required: true, rows: 7, maxlength: 8000, placeholder: "자료의 원문을 붙여넣으세요. 실제 개인정보 대신 합성자료를 사용해 주세요." });
+    recordField("자료 출처 / 채널", "source", draft.source, { required: true, maxlength: 100, placeholder: "예: 예시 메시지 · 판매내역" }));
+  const original = recordField("원문 내용", "text", draft.text, { multiline: true, required: true, rows: 7, maxlength: 8000, placeholder: "자료의 원문을 붙여넣으세요. 실제 개인정보 대신 예시 자료를 사용해 주세요." });
   const file = setAttrs(el("input", "record-file-input"), { type: "file", id: "record-text-file", accept: ".txt,text/plain", "data-record-kind": kind });
   const fileLabel = el("label", "record-file-label", el("span", "", "TXT에서 원문 불러오기"), file);
   const save = setAttrs(el("button", "button figma-primary", supplement ? "보완 원문 추가" : "원문 추가하고 확인하기"), { type: "submit" });
   append(form, row, meta, original, el("p", "record-muted", "텍스트·UTF-8 TXT만 지원 · 최대 8,000자 · 이미지/PDF 자동 읽기는 아직 지원하지 않습니다."),
     el("div", "record-actions", save, fileLabel));
-  section.append(form, recordAction("합성 예시 3건 추가", "record-demo", kind));
+  section.append(form, recordAction("예시 자료 3건 추가", "record-demo", kind));
   const wrap = el("div", "record-summary-grid record-intake-layout", section);
   const list = figmaDesktopSection("연결한 원문", record.evidence.length + "건 · 새 자료를 추가해도 이전 확인 이력은 유지됩니다.");
   record.evidence.forEach(e => list.append(el("article", "record-mini-source", el("strong", "", e.title),
     el("p", "", (RECORD_KIND[e.kind] || e.kind) + " · " + recordTime(e.occurredAt)),
     el("p", "record-source-excerpt", e.text.slice(0, 130)),
     recordAction("원문·확인 항목 보기", "record-select-evidence", kind, { "data-evidence-id": e.id, "data-record-view": kind === "shield" ? "s03" : "c03" }))));
-  if (!record.evidence.length) list.append(el("p", "record-muted", "아직 추가한 자료가 없습니다. 왼쪽에서 원문을 입력하거나 합성 예시로 시작하세요."));
+  if (!record.evidence.length) list.append(el("p", "record-muted", "아직 추가한 자료가 없습니다. 왼쪽에서 원문을 입력하거나 예시 자료로 시작하세요."));
   wrap.append(list);
   return wrap;
 }
@@ -344,7 +344,7 @@ function renderRecordWorkspace(kind, view) {
     c05a: "이슈 검토", c05b: "상충·미확인 검토", c06: "사건 타임라인", c07: "증거 연결 보고서", c08: "자료 보완",
   };
   const content = el("div", "figma-desktop-content record-content");
-  const storage = el("div", "record-storage-notice", el("strong", "", "합성자료 체험 · 이 탭에서 작업 중"),
+  const storage = el("div", "record-storage-notice", el("strong", "", "예시 자료 · 이 화면에서 작업 중"),
     el("span", "", "서버·브라우저 저장소에 보관하지 않습니다. 새로고침 전 자료를 내려받으세요."));
   content.append(storage, recordNotice(kind));
   if (step === "01") content.append(recordOverview(kind));
@@ -363,8 +363,8 @@ function loadRecordDemo(kind) {
   let record = caseRecord(kind);
   const samples = FinGuardRecords.demoEvidence(kind).filter(e => !record.evidence.some(old => old.title === e.title && old.text === e.text));
   samples.forEach(e => { record = FinGuardRecords.addEvidence(record, e); });
-  if (samples.length) commitCase(kind, record, "합성 원문 " + samples.length + "건을 추가했습니다. 원문과 정리 항목을 대조해 주세요.");
-  else recordSession.notices[kind] = "이미 같은 합성 예시가 있습니다. 기존 기록을 그대로 유지합니다.";
+  if (samples.length) commitCase(kind, record, "예시 자료 " + samples.length + "건을 추가했습니다. 원문과 정리 항목을 대조해 주세요.");
+  else recordSession.notices[kind] = "이미 같은 예시 자료가 있습니다. 기존 기록을 그대로 유지합니다.";
   recordSession.selected[kind] = record.evidence[0]?.id || "";
   openRecordView(kind, kind === "shield" ? "s03" : "c03", { allowSkip: true });
 }
@@ -373,7 +373,7 @@ function startFrozenRecord(message) {
   let record = FinGuardRecords.createCase("frozen");
   if (message.trim()) {
     record = FinGuardRecords.addEvidence(record, {
-      title: "Gate에서 가져온 메시지", kind: "message", source: "합성 Gate 입력 · 표시 시각은 가져온 시각 (수신 시각 미확인)",
+      title: "Gate에서 가져온 메시지", kind: "message", source: "예시 메시지 입력 · 표시 시각은 가져온 시각 (수신 시각 미확인)",
       occurredAt: new Date().toISOString(), text: message.trim(),
     });
   }
