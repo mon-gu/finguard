@@ -2694,12 +2694,6 @@ function landingBrand() {
   return brand;
 }
 
-function landingNavCta(label, className = "landing-nav-cta", target = "s00", entryFlow = "freeze") {
-  const cta = setAttrs(screenButton("", target, className), { "aria-label": label, "data-entry-flow": entryFlow });
-  append(cta, setAttrs(el("img", "landing-nav-cta-bg"), { src: "/figma-main-nav-cta.svg", alt: "" }), el("span", "landing-nav-cta-label", label));
-  return cta;
-}
-
 function landingNavItem(item) {
   const active = item.id === "home" && state.screen === "home";
   const className = `landing-nav-link ${active ? "is-active" : ""}`.trim();
@@ -2715,9 +2709,6 @@ function landingNavigation() {
   const primary = setAttrs(el("nav", "landing-primary-nav"), { "aria-label": "주요 메뉴" });
   LANDING_NAV_ITEMS.forEach((item) => primary.append(landingNavItem(item)));
 
-  const tools = el("div", "landing-nav-tools");
-  tools.append(landingNavCta("계좌가 막힌 후 준비"));
-
   const menuToggle = button("", "landing-menu-toggle", {
     "data-action": "toggle-home-nav",
     "aria-label": state.homeNavOpen ? "메뉴 닫기" : "메뉴 열기",
@@ -2725,13 +2716,12 @@ function landingNavigation() {
     "aria-controls": "landing-mobile-menu",
   });
   append(menuToggle, el("span", "landing-menu-line"), el("span", "landing-menu-line"), el("span", "landing-menu-line"));
-  inner.append(landingBrand(), primary, tools, menuToggle);
+  inner.append(landingBrand(), primary, menuToggle);
   header.append(inner, setAttrs(el("img", "landing-nav-divider"), { src: "/figma-main-nav-divider.svg", alt: "" }));
 
   if (state.homeNavOpen) {
     const mobileMenu = setAttrs(el("nav", "landing-mobile-menu"), { id: "landing-mobile-menu", "aria-label": "모바일 주요 메뉴" });
     LANDING_NAV_ITEMS.forEach((item) => mobileMenu.append(landingNavItem(item)));
-    append(mobileMenu, el("div", "landing-mobile-menu-divider"), landingNavCta("계좌가 막힌 후 준비", "landing-nav-cta landing-mobile-cta"));
     header.append(mobileMenu);
   }
   return header;
@@ -2768,8 +2758,7 @@ function prototypeNavigation() {
     }));
   });
 
-  const cta = screenButton("계좌가 막힌 후 준비", "s00", "prototype-nav-cta", { "data-entry-flow": "freeze" });
-  inner.append(brand, links, cta);
+  inner.append(brand, links);
   header.append(inner);
   return header;
 }

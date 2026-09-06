@@ -132,6 +132,12 @@ class ServerContractTests(unittest.TestCase):
         for marker in ("AFTER · 송금 직후", "SHIELD · 불법 추심 대응", 'target: "after"', 'target: "s00"'):
             self.assertIn(marker, app_js)
 
+    def test_navigation_does_not_duplicate_frozen_entry_cta(self) -> None:
+        app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
+        self.assertNotIn("landingNavCta(", app_js)
+        self.assertNotIn("prototype-nav-cta", app_js)
+        self.assertIn('label: "계좌가 막힌 후"', app_js)
+
     def test_first_use_guides_cover_home_and_each_service(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         styles_css = (WEB_ROOT / "styles.css").read_text(encoding="utf-8")
