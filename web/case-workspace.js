@@ -83,7 +83,7 @@ function recordRail(kind, view) {
   const brand = screenButton("FinGuard", "home", "figma-rail-brand-link", { "aria-label": "FinGuard 홈" });
   append(rail, el("div", "figma-rail-brand", el("span", "figma-rail-mark", "F"), brand),
     el("span", "figma-rail-caption", kind === "shield" ? "SHIELD · 불법 추심 대응" : "FROZEN · 계좌가 막힌 후"),
-    el("strong", "figma-rail-case", kind === "shield" ? "추심 연락 기록" : "지급정지 소명 준비"),
+    el("strong", "figma-rail-case", kind === "shield" ? "추심 연락 기록" : "계좌가 막힌 후 자료 정리"),
     el("span", "figma-rail-subtitle", "합성자료 체험 · 브라우저 내 작업"));
   const nav = setAttrs(el("nav", frozen ? "figma-rail-nav figma-stepper-nav" : "figma-rail-nav"), { "aria-label": kind === "shield" ? "불법 추심 업무 메뉴" : "사건 진행 단계" });
   if (frozen) {
@@ -161,7 +161,7 @@ function recordOverview(kind) {
   record.evidence.slice(-5).reverse().forEach(e => activity.append(recordAction(e.title + " · " + recordTime(e.occurredAt), "record-select-evidence", kind, { "data-evidence-id": e.id, "data-record-view": review })));
   const next = figmaDesktopSection("지금 할 일", "확인 전 항목을 숨기지 않고 자료에 함께 표시합니다.");
   append(next, recordViewButton(kind === "shield" ? "원문과 항목 대조하기" : "자료 수집 계속하기", kind, review, true),
-    recordViewButton(kind === "shield" ? "상담 준비 자료 만들기" : "소명팩 준비 상태 확인", kind, report),
+    recordViewButton(kind === "shield" ? "상담 준비 자료 만들기" : "은행 설명자료 상태 확인", kind, report),
     el("p", "record-muted", "자동 신고·기관 전송·지급정지 해제는 실행하지 않습니다."));
   split.append(activity, next);
   block.append(split);
@@ -327,9 +327,9 @@ function recordReport(kind) {
   const record = caseRecord(kind);
   const side = el("div", "record-section-stack", recordSources(kind, true));
   if (kind === "shield") side.append(officialSupport());
-  const preview = figmaDesktopSection(kind === "shield" ? "상담 준비 자료 미리보기" : "소명팩 미리보기", "현재 원문·확인 내용·포함 범위로 생성합니다. 확인 전 항목은 별도로 남깁니다.");
+  const preview = figmaDesktopSection(kind === "shield" ? "상담 준비 자료 미리보기" : "은행 설명자료 미리보기", "현재 원문·확인 내용·포함 범위로 생성합니다. 확인 전 항목은 별도로 남깁니다.");
   if (record.evidence.some(e => e.included)) {
-    const frame = setAttrs(el("iframe", "record-report-preview"), { title: kind === "shield" ? "상담 준비 자료" : "지급정지 소명 준비 자료", sandbox: "" });
+    const frame = setAttrs(el("iframe", "record-report-preview"), { title: kind === "shield" ? "상담 준비 자료" : "은행 설명자료", sandbox: "" });
     frame.srcdoc = FinGuardRecords.buildReport(record);
     preview.append(frame);
   } else preview.append(el("p", "record-muted", "원문을 한 건 이상 선택하면 미리보기가 생성됩니다."));

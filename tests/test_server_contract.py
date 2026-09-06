@@ -94,7 +94,7 @@ class ServerContractTests(unittest.TestCase):
         start = app_js.index('id: "landing-stage-after-freeze"')
         end = app_js.index("\n  },\n];", start)
         stage = app_js[start:end]
-        self.assertIn('action: "소명 준비 시작하기"', stage)
+        self.assertIn('action: "설명자료 만들기"', stage)
         self.assertIn('target: "s00"', stage)
         self.assertIn('flow: "freeze"', stage)
 
@@ -118,7 +118,7 @@ class ServerContractTests(unittest.TestCase):
             self.assertIn(f'"{screen}"', app_js)
         for state in ("DANGER", "LOW_RISK_NOT_PROOF", "ABSTAIN", "INJECTION_DETECTED"):
             self.assertIn(state, app_js)
-        for marker in ("FROZEN · 계좌가 막힌 후", "소명팩을 준비합니다", "소명팩 준비 상태", "renderActualC01Desktop"):
+        for marker in ("FROZEN · 계좌가 막힌 후", "은행에 설명할 자료를 준비합니다", "설명자료 준비 상태", "renderActualC01Desktop"):
             self.assertIn(marker, app_js)
 
     def test_three_stage_entry_points_are_explicit(self) -> None:
@@ -135,6 +135,14 @@ class ServerContractTests(unittest.TestCase):
             self.assertIn(f"{service}: {{", app_js)
         for marker in ("onboarding-guide", "service-tour-guide", "service-guide-link", "onboarding-focus", "data-placement", "coach-arrow"):
             self.assertIn(marker, styles_css)
+
+    def test_guides_open_only_from_explicit_controls(self) -> None:
+        app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
+        self.assertIn('action === "open-onboarding"', app_js)
+        self.assertIn('action === "open-service-tour"', app_js)
+        self.assertNotIn("maybeOpenServiceTour", app_js)
+        self.assertNotIn("hasSeenServiceTour", app_js)
+        self.assertNotIn("ONBOARDING_STORAGE_KEY", app_js)
 
     def test_workspace_sidebar_exposes_sequential_progression(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
