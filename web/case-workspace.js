@@ -125,8 +125,7 @@ function recordRail(kind, view) {
     el("strong", "", frozen ? "다음 단계부터 순서대로 열립니다" : "필요한 업무부터 선택하세요"),
     el("p", "", frozen ? "완료한 단계는 사이드바에서 다시 확인할 수 있습니다." : "페이지를 모두 순서대로 완료할 필요는 없습니다."));
   footer.append(recordAction("이 서비스 사용 방법", "open-service-tour", kind, { "data-service-tour-kind": kind }));
-  if (kind === "frozen") footer.append(recordAction("기존 화면 예시 보기", "record-reference", kind));
-  else footer.append(screenButton("처음 안내 다시 보기", "shield", "record-rail-link"));
+  if (kind !== "frozen") footer.append(screenButton("처음 안내 다시 보기", "shield", "record-rail-link"));
   rail.append(nav, footer);
   return rail;
 }
