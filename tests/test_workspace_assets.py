@@ -1,7 +1,7 @@
 import threading
 import unittest
 from http.server import ThreadingHTTPServer
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from app.server import FinGuardHandler
 
@@ -30,6 +30,14 @@ class WorkspaceAssetTests(unittest.TestCase):
             self.assertIn(asset, html)
         self.assertLess(html.index("case-records.js"), html.index("case-workspace.js"))
         self.assertLess(html.index("case-workspace.js"), html.index("/app.js"))
+
+    def test_health_and_home_support_head_checks(self):
+        for path in ("/", "/healthz", "/readyz"):
+            request = Request(f"{self.base}{path}", method="HEAD")
+            with self.subTest(path=path), urlopen(request) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), b"")
+                self.assertGreater(int(response.headers["Content-Length"]), 0)
 
 
 if __name__ == "__main__":

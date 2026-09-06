@@ -33,10 +33,10 @@ python3 -m app.server --port 8765
 
 - Build Command: `python3 -m compileall -q app`
 - Start Command: `python3 -m app.server --host 0.0.0.0 --port $PORT`
-- Health Check Path: `/healthz`
+- Health Check Path: `/healthz` (UptimeRobot도 이 주소를 `GET`으로 모니터링)
 - 외부 환경변수: 없음
 
-배포 후 `/healthz`, `/readyz`, `/`, `/pitch`를 차례로 확인합니다. Render 기본 파일 시스템은 영구 사건 저장소로 사용하지 않으므로, 현재 MVP는 원문을 서버에 보관하지 않는 설계를 유지합니다. 실제 계정별 저장·복원과 삭제를 운영 기능으로 추가하려면 인증, 영구 DB, 보존기간 정책을 별도로 연결해야 합니다.
+배포 후 `/healthz`, `/readyz`, `/`, `/pitch`를 차례로 확인합니다. 루트와 헬스 엔드포인트는 `HEAD` 요청에도 응답하므로 외부 모니터가 `501 Not Implemented`로 오판하지 않습니다. Render 기본 파일 시스템은 영구 사건 저장소로 사용하지 않으므로, 현재 MVP는 원문을 서버에 보관하지 않는 설계를 유지합니다. 실제 계정별 저장·복원과 삭제를 운영 기능으로 추가하려면 인증, 영구 DB, 보존기간 정책을 별도로 연결해야 합니다.
 
 서비스 제안서를 읽을 때는 발표 모드를 사용합니다.
 

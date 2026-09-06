@@ -73,7 +73,7 @@ def validate_payload(payload: Any) -> str:
 class FinGuardHandler(BaseHTTPRequestHandler):
     server_version = "FinGuardDemo/0.1"
 
-    def _send_json(self, status: int, payload: dict) -> None:
+    def _send_json(self, status: int, payload: dict, *, include_body: bool = True) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -81,13 +81,14 @@ class FinGuardHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
-        self.wfile.write(body)
+        if include_body:
+            self.wfile.write(body)
 
-    def _send_file(self, file_path: Path) -> None:
+    def _send_file(self, file_path: Path, *, include_body: bool = True) -> None:
         try:
             body = file_path.read_bytes()
         except OSError:
-            self._send_json(404, {"error": "not_found"})
+            self._send_json(404, {"error": "not_found"}, include_body=include_body)
             return
         content_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
         self.send_response(200)
@@ -95,31 +96,38 @@ class FinGuardHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
-        self.wfile.write(body)
+        if include_body:
+            self.wfile.write(body)
 
-    def _serve_web_file(self, relative_path: str) -> None:
+    def _serve_web_file(self, relative_path: str, *, include_body: bool = True) -> None:
         candidate = (WEB_ROOT / relative_path).resolve()
         if not candidate.is_relative_to(WEB_ROOT) or not candidate.is_file():
-            self._send_json(404, {"error": "not_found"})
+            self._send_json(404, {"error": "not_found"}, include_body=include_body)
             return
-        self._send_file(candidate)
+        self._send_file(candidate, include_body=include_body)
 
-    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+    def _dispatch_get(self, *, include_body: bool) -> None:
         path = urlparse(self.path).path
         if path == "/healthz":
-            self._send_json(200, {"status": "ok", "service": "finguard-demo"})
+            self._send_json(200, {"status": "ok", "service": "finguard-demo"}, include_body=include_body)
         elif path == "/readyz":
-            self._send_json(200, {"status": "ready", "model_version": "rules-v0.1-demo"})
+            self._send_json(200, {"status": "ready", "model_version": "rules-v0.1-demo"}, include_body=include_body)
         elif path == "/v1/demo-cases":
-            self._send_json(200, {"cases": list(DEMO_CASES)})
+            self._send_json(200, {"cases": list(DEMO_CASES)}, include_body=include_body)
         elif path == "/":
-            self._serve_web_file("index.html")
+            self._serve_web_file("index.html", include_body=include_body)
         elif path in {"/app.js", "/styles.css", "/case-records.js", "/case-workspace.js", "/case-workspace.css", "/favicon.svg", "/figma-brand-mark.svg", "/figma-main-nav-brand.svg", "/figma-main-nav-cta.svg", "/figma-main-nav-divider.svg", "/pitch.css", "/pitch.js"}:
-            self._serve_web_file(path.lstrip("/"))
+            self._serve_web_file(path.lstrip("/"), include_body=include_body)
         elif path == "/pitch":
-            self._serve_web_file("pitch.html")
+            self._serve_web_file("pitch.html", include_body=include_body)
         else:
-            self._send_json(404, {"error": "not_found"})
+            self._send_json(404, {"error": "not_found"}, include_body=include_body)
+
+    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+        self._dispatch_get(include_body=True)
+
+    def do_HEAD(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+        self._dispatch_get(include_body=False)
 
     def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
         if urlparse(self.path).path != "/v1/analyze":
