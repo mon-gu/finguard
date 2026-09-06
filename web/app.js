@@ -368,7 +368,7 @@ const SERVICE_TOUR_STEPS = {
       { target: ".before-capture-tabs", title: "원문을 넣는 방법을 고르세요", description: "스크린샷을 참고하거나 직접 메시지를 붙여넣을 수 있습니다. 이미지 OCR은 아직 지원하지 않으므로 원문을 직접 확인해 주세요." },
       { target: ".before-capture-sample", title: "예시로 먼저 연습할 수 있습니다", description: "실제 개인정보 대신 예시 메시지를 불러와 어떤 위험 신호를 찾는지 먼저 확인할 수 있습니다." },
       { target: ".before-capture-primary", title: "메시지 점검하기를 누르세요", description: "입력한 한 건만 분석합니다. 결과에서 위험 신호와 지금 멈춰야 할 행동을 바로 확인합니다." },
-      { target: ".before-capture-alt", title: "계좌가 이미 막혔다면 FROZEN으로 이동합니다", description: "행동 전 점검과 계좌 정지 후 소명 준비는 다른 흐름입니다. 상황에 맞는 서비스로 이동하세요." },
+      { target: ".before-capture-alt", title: "계좌가 이미 막혔다면 FROZEN으로 이동합니다", description: "행동 전 점검과 계좌가 막힌 후 자료 정리는 다른 흐름입니다. 상황에 맞는 서비스로 이동하세요." },
     ],
   },
   after: {
@@ -580,7 +580,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-g01": {
-    label: "FROZEN · 원문 입력",
+    label: "FROZEN · 메시지 확인",
     steps: [
       { target: ".figma-demo-primary", title: "예시로 먼저 체험하세요", description: "실제 개인정보 없이 준비된 예시로 위험 신호와 다음 행동을 바로 확인합니다." },
       { target: ".figma-entry-tabs", title: "내 자료로 확인할 수도 있습니다", description: "받은 메시지를 붙여넣거나 스크린샷을 참고할 수 있습니다. 이미지 내용을 자동으로 읽는 기능은 아직 준비 중입니다." },
@@ -592,11 +592,11 @@ const SERVICE_SCREEN_TOURS = {
     steps: [
       { target: ".figma-evidence-list", title: "근거 항목을 확인하세요", description: "원문에서 추출된 요구·긴급성·비밀 요구를 원문과 비교합니다." },
       { target: ".figma-result-content .figma-callout", title: "사람 확인 원칙을 기억하세요", description: "자동 분석은 사실이나 적법성을 확정하지 않습니다. 공식 채널에서 독립적으로 확인합니다." },
-      { target: ".figma-mobile-actions", title: "소명 자료로 전환할지 고르세요", description: "자료 정리 범위를 확인하면 사건 생성 동의 화면으로 이동합니다. 원문만 보고 종료할 수도 있습니다." },
+      { target: ".figma-mobile-actions", title: "정리 자료로 이어갈지 고르세요", description: "자료 사용 범위를 확인하면 계좌가 막힌 후 자료 정리로 이어집니다. 결과만 보고 나갈 수도 있습니다." },
     ],
   },
   "frozen-g03": {
-    label: "FROZEN · 사건 전환 동의",
+    label: "FROZEN · 자료 사용 확인",
     steps: [
       { target: ".figma-consent-list", title: "보관 규칙을 확인하세요", description: "이 탭에서 무엇을 정리하고 무엇을 하지 않는지 세 항목을 읽고 직접 체크합니다." },
       { target: ".figma-storage-summary", title: "저장 범위를 확인하세요", description: "현재 MVP는 서버나 브라우저 저장소에 보관하지 않습니다. 필요한 자료는 직접 내려받아 보관합니다." },
@@ -657,7 +657,7 @@ const SERVICE_SCREEN_TOURS = {
   "frozen-c07": {
     label: "FROZEN · 증거 연결 보고서",
     steps: [
-      { target: ".record-report-grid", title: "소명팩 범위를 검토하세요", description: "원문·확인 내용·상충 항목이 어떤 근거로 묶였는지 미리보기와 색인으로 확인합니다." },
+      { target: ".record-report-grid", title: "설명자료 범위를 검토하세요", description: "원문·확인 내용·상충 항목이 어떤 근거로 묶였는지 미리보기와 색인으로 확인합니다." },
       { target: ".record-rail", title: "보고서를 검토하고 내려받으세요", description: "기관에 자동 전송하지 않습니다. 필요한 범위를 확인한 뒤 HTML 또는 인쇄/PDF로 직접 보관합니다." },
     ],
   },
@@ -1523,7 +1523,7 @@ function renderAfter07() {
   const shield = el("section", "after-branch-card after-branch-shield");
   append(shield, figmaBadge("계좌·기기 보호", "after-branch-badge after-branch-danger"), el("p", "", "인증정보 또는 원격제어 앱을 제공한 경우, 일반 순서보다 먼저 보호 행동을 제시합니다."), actionButton("보호 행동 확인", "after-shield", "button after-branch-button"));
   const freeze = el("section", "after-branch-card after-branch-freeze");
-  append(freeze, figmaBadge("계좌 정지 후 연결", "after-branch-badge after-branch-info"), el("p", "", "본인 계좌까지 지급정지되면 기존 사건·증거를 유지한 채 소명 모듈로 전환합니다."), actionButton("소명 모듈로 이동", "after-freeze", "button after-branch-button"));
+  append(freeze, figmaBadge("계좌가 막힌 후 연결", "after-branch-badge after-branch-info"), el("p", "", "본인 계좌가 막히면 기존 사건·증거를 유지한 채 설명자료 정리로 이어갑니다."), actionButton("설명자료 준비로 이동", "after-freeze", "button after-branch-button"));
   branches.append(shield, freeze);
   body.append(
     branches,
@@ -1679,7 +1679,7 @@ function renderShieldFlow() {
   const actions = el("div", "figma-mobile-actions shield-flow-actions");
   actions.append(recordAction(index === 2 ? "상담 준비 자료 만들기" : "연락 한 건 기록하기", "record-open", "shield", { "data-record-view": index === 2 ? "s07" : "s02" }, true));
   if (index < SHIELD_STEPS.length - 1) actions.append(actionButton("대응 안내 계속 보기", "shield-next", "button figma-secondary"));
-  else actions.append(screenButton("계좌도 막혔다면 소명 준비", "s00", "button figma-secondary", { "data-entry-flow": "freeze" }));
+  else actions.append(screenButton("계좌도 막혔다면 설명자료 준비", "s00", "button figma-secondary", { "data-entry-flow": "freeze" }));
   if (index === 0) actions.append(recordAction("합성 연락 3건으로 체험", "record-demo", "shield"));
   if (index > 0) actions.append(actionButton("이전 단계", "shield-back", "button figma-secondary"));
   else actions.append(screenButton("홈으로 돌아가기", "home", "button figma-secondary"));
@@ -2381,7 +2381,7 @@ function renderWorkspace() {
   append(
     handoff,
     badge(fromAfter ? "AFTER → FROZEN" : "FROZEN · CORE", fromAfter ? COLORS.warning : COLORS.info),
-    el("strong", "", fromAfter ? "송금 직후 기록이 연결된 사건" : "계좌가 막힌 후 소명 준비"),
+    el("strong", "", fromAfter ? "송금 직후 기록이 연결된 사건" : "계좌가 막힌 후 자료 정리"),
     el("p", "", fromAfter ? "72시간 대응에서 남긴 거래·대화·문서를 이 사례의 받은 내용과 함께 검토합니다." : "거래·대화·문서를 연결해 은행에 설명할 자료를 준비합니다."),
   );
   page.append(handoff);
@@ -2858,7 +2858,7 @@ function renderLandingPage() {
   const heroTitle = el("h1", "landing-hero-title");
   append(heroTitle, el("span", "landing-copy-desktop", "금융사고 전후의 흩어진 자료를\n증거와 공식 다음 행동으로 바꿉니다."), el("span", "landing-copy-mobile", "행동을 멈추고,\n증거를 잇습니다."));
   const heroDescription = el("p", "landing-hero-description");
-  append(heroDescription, el("span", "landing-copy-desktop", "지금 겪는 상황에 맞춰 행동 전, 송금 직후, 계좌 정지 후 중 하나를 선택하세요.\n어느 단계에서 시작하든 같은 사건 엔진으로 이어집니다."), el("span", "landing-copy-mobile", "금융사고 전후의 흩어진 자료를\n증거와 공식 다음 행동으로 바꿉니다."));
+  append(heroDescription, el("span", "landing-copy-desktop", "지금 겪는 상황에 맞춰 행동 전, 송금 직후, 계좌가 막힌 후 중 하나를 선택하세요.\n어느 단계에서 시작하든 같은 사건 엔진으로 이어집니다."), el("span", "landing-copy-mobile", "금융사고 전후의 흩어진 자료를\n증거와 공식 다음 행동으로 바꿉니다."));
   append(heroCopy, el("span", "landing-kicker", "금융사고 대응 코파일럿"), heroTitle, heroDescription);
   const heroActions = setAttrs(el("div", "landing-hero-actions"), { "data-onboarding-target": "home-actions" });
   append(
@@ -3208,7 +3208,7 @@ function renderBeforeCapture() {
   append(sample, sampleCopy, actionButton("예시 보기", "before-example", "before-capture-sample-chip"));
   body.append(sample, el("div", "before-capture-privacy", "업로드한 원문은 결과 확인 후 보관하지 않습니다."));
   body.append(actionButton(state.busy ? "분석 중…" : "메시지 점검하기", "before-check", "button figma-primary before-capture-primary", { disabled: state.busy, "aria-busy": String(state.busy) }));
-  body.append(actionButton("이미 계좌가 막혔다면  계좌 정지 후 →", "before-freeze", "before-capture-alt"));
+  body.append(actionButton("이미 계좌가 막혔다면  계좌가 막힌 후 →", "before-freeze", "before-capture-alt"));
   body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "before" }));
   body.append(el("p", "before-capture-disclaimer", "위험 신호 참고용 · 사기 여부를 확정하지 않습니다."));
   if (state.beforeNotice) body.append(setAttrs(el("p", "before-capture-notice", state.beforeNotice), { role: "status", "aria-live": "polite" }));
