@@ -1175,7 +1175,8 @@ a { color: inherit; }
   z-index: 70;
   outline: 3px solid #175cd3;
   outline-offset: 6px;
-  box-shadow: 0 0 0 10px rgba(23, 92, 211, .12);
+  /* Keep the active control readable while the rest of the page recedes. */
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, .28), 0 0 0 10px rgba(23, 92, 211, .14);
   scroll-margin: 24px;
 }
 
@@ -1651,4 +1652,321 @@ a { color: inherit; }
   .after-sequence-status { grid-column: 2; justify-self: start; }
   .after-board-next { grid-template-columns: 1fr; }
   .after-board-next-button { width: 100%; }
+}
+
+/* AFTER desktop workspace: keep the Figma-like mobile screen on phones, but
+   present the same content as a task workspace on wider screens. */
+.after-desktop-shell {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 254px;
+  gap: 16px;
+  width: min(100%, 1450px);
+  min-width: 0;
+  align-items: start;
+}
+.after-desktop-main { min-width: 0; }
+.after-desktop-stepper,
+.after-desktop-summary {
+  position: sticky;
+  top: 92px;
+  min-width: 0;
+}
+.after-desktop-stepper {
+  padding: 20px 13px 15px;
+  border: 1px solid #183c59;
+  border-radius: 14px;
+  background: #0d2941;
+  color: #e4edf5;
+  box-shadow: 0 12px 28px rgba(13, 41, 65, .13);
+}
+.after-desktop-stepper-kicker,
+.after-summary-kicker {
+  display: block;
+  color: #6ea8fe;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .06em;
+}
+.after-desktop-stepper-title {
+  margin: 7px 9px 0;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: -.055em;
+}
+.after-desktop-stepper-copy {
+  margin: 7px 9px 0;
+  color: #9fb3c8;
+  font-size: 10px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+.after-desktop-step-nav {
+  display: grid;
+  gap: 2px;
+  margin-top: 19px;
+  padding-top: 13px;
+  border-top: 1px solid #28455d;
+}
+.after-step-item {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #c4d2df;
+  cursor: pointer;
+  text-align: left;
+}
+.after-step-item:hover:not(:disabled) { border-color: #3c5e79; background: #193c58; color: #fff; }
+.after-step-item.is-active { border-color: #2563eb; background: #2563eb; color: #fff; }
+.after-step-item.is-complete { color: #d8fbe7; }
+.after-step-item.is-locked { cursor: not-allowed; opacity: .43; }
+.after-step-item.is-locked:hover { border-color: transparent; background: transparent; color: #c4d2df; }
+.after-step-marker {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid #53718c;
+  border-radius: 50%;
+  color: #b5c8d8;
+  font-size: 8px;
+  font-weight: 850;
+}
+.after-step-item.is-active .after-step-marker { border-color: rgba(255,255,255,.72); background: rgba(255,255,255,.16); color: #fff; }
+.after-step-item.is-complete .after-step-marker { border-color: #69d39b; background: #0d6847; color: #d8fbe7; }
+.after-step-copy { display: grid; gap: 2px; min-width: 0; }
+.after-step-label { overflow: hidden; color: inherit; font-size: 11px; font-weight: 800; line-height: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.after-step-status { color: #91a8bd; font-size: 8px; line-height: 11px; white-space: nowrap; }
+.after-step-item.is-active .after-step-status { color: #dbeafe; }
+.after-step-item.is-complete .after-step-status { color: #9be6ba; }
+.after-step-arrow { display: flex; height: 13px; align-items: center; padding-left: 19px; color: #3d556c; font-size: 12px; line-height: 1; }
+.after-step-arrow.is-reached { color: #69a2ff; }
+.after-desktop-stepper-note,
+.after-desktop-summary-note {
+  margin: 13px 9px 0;
+  color: #91a8bd;
+  font-size: 9px;
+  line-height: 1.45;
+}
+.after-desktop-summary { display: grid; gap: 12px; }
+.after-summary-card,
+.after-summary-progress,
+.after-summary-metrics,
+.after-summary-next {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  background: #fff;
+}
+.after-summary-title { margin: 6px 0 0; color: #0d2941; font-size: 17px; letter-spacing: -.055em; }
+.after-summary-copy { margin: 6px 0 0; color: #667085; font-size: 10px; line-height: 1.45; }
+.after-summary-info-rows { margin-top: 13px; }
+.after-summary-info-row { min-height: 31px; padding: 7px 0; }
+.after-summary-info-label { color: #667085; font-size: 9px; }
+.after-summary-info-value { color: #344054; font-size: 10px; }
+.after-summary-progress { border-color: #fedf89; background: #fffcf2; }
+.after-summary-progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #b54708; font-size: 10px; }
+.after-summary-progress-heading span { color: #667085; font-size: 9px; }
+.after-summary-progress-track { height: 5px; margin-top: 10px; overflow: hidden; border-radius: 999px; background: #fce7b2; }
+.after-summary-progress-value { display: block; height: 100%; border-radius: inherit; background: #c2410c; }
+.after-summary-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0; border: 0; background: transparent; }
+.after-summary-metric { display: grid; gap: 4px; min-width: 0; padding: 11px; border: 1px solid #d6e0ed; border-radius: 10px; background: #f8fafc; }
+.after-summary-metric span { color: #667085; font-size: 9px; }
+.after-summary-metric strong { color: #0d2941; font-size: 16px; line-height: 1; }
+.after-summary-next { border-color: #b2ddff; background: #eff8ff; }
+.after-summary-next .after-summary-kicker { color: #175cd3; }
+.after-summary-next strong { display: block; margin-top: 6px; color: #175cd3; font-size: 12px; line-height: 1.35; }
+.after-summary-next p { margin: 5px 0 0; color: #667085; font-size: 10px; line-height: 1.45; }
+.after-desktop-summary-note { margin: 0 4px; color: #98a2b3; }
+
+.after-desktop-main > .after-transfer-mobile {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  border: 1px solid #cbd6e2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 14px 30px rgba(16, 24, 40, .08);
+}
+.after-desktop-main .after-transfer-mobile .figma-mobile-topbar {
+  height: 72px;
+  padding: 0 28px;
+}
+.after-desktop-main .after-transfer-mobile .figma-mobile-brand { font-size: 19px; }
+.after-desktop-main .after-transfer-mobile .figma-mobile-progress { min-width: 88px; padding: 6px 12px; font-size: 11px; }
+.after-desktop-main .after-transfer-mobile .figma-mobile-body {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  padding: 30px 32px 36px;
+}
+.after-desktop-main .after-transfer-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px 16px;
+  min-height: 0;
+}
+.after-desktop-main .after-transfer-content > * { min-width: 0; }
+.after-desktop-main .after-transfer-content > .after-transfer-step-header,
+.after-desktop-main .after-transfer-content > .after-transfer-actions,
+.after-desktop-main .after-transfer-content > .after-transfer-footer-note { grid-column: 1 / -1; }
+.after-desktop-main .after-transfer-content .after-transfer-title { font-size: 32px; line-height: 1.2; }
+.after-desktop-main .after-transfer-content .after-transfer-intro { max-width: 560px; font-size: 14px; line-height: 1.55; }
+.after-desktop-main .after-transfer-content .after-transfer-section-title { font-size: 14px; line-height: 18px; }
+.after-desktop-main .after-transfer-content .figma-callout { margin-top: 0; padding: 15px; }
+.after-desktop-main .after-transfer-content .figma-callout-title { font-size: 13px; }
+.after-desktop-main .after-transfer-content .figma-callout-copy { font-size: 11px; }
+.after-desktop-main .after-transfer-content .after-transfer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 0; }
+.after-desktop-main .after-transfer-content .after-transfer-actions .button { width: auto; min-width: 176px; }
+.after-desktop-main .after-transfer-content .after-transfer-footer-note { margin-top: -7px; font-size: 10px; }
+.after-desktop-main .after-af00 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.after-desktop-main .after-af00 > .after-transfer-badge,
+.after-desktop-main .after-af00 > .after-transfer-title,
+.after-desktop-main .after-af00 > .after-transfer-intro,
+.after-desktop-main .after-af00 > .after-transfer-section-title,
+.after-desktop-main .after-af00 > .figma-callout,
+.after-desktop-main .after-af00 > .after-transfer-actions { grid-column: 1 / -1; }
+.after-desktop-main .after-af00 > .after-transfer-help-list { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.after-desktop-main .after-af00 .after-transfer-help-item { min-height: 64px; padding: 12px 14px; }
+.after-desktop-main .after-af00 .after-transfer-help-item strong { font-size: 13px; }
+.after-desktop-main .after-af01 > .after-transfer-situation,
+.after-desktop-main .after-af01 > .after-transfer-actions { grid-column: 1 / -1; }
+.after-desktop-main .after-af01 > .after-upload-card { margin-top: 0; }
+.after-desktop-main .after-af01 > .after-transfer-card { margin-top: 0; }
+.after-desktop-main .after-af01 .after-transfer-situation { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 20px; margin-top: 0; }
+.after-desktop-main .after-af01 .after-transfer-situation .after-transfer-section-title { grid-column: 1 / -1; }
+.after-desktop-main .after-upload-card { min-height: 112px; margin-top: 0; padding: 17px; }
+.after-desktop-main .after-upload-copy strong { font-size: 13px; }
+.after-desktop-main .after-upload-copy small { font-size: 10px; }
+.after-desktop-main .after-upload-choice { font-size: 11px; }
+.after-desktop-main .after-transfer-card { margin-top: 0; padding: 17px; }
+.after-desktop-main .after-transfer-card .after-transfer-section-title { margin-bottom: 11px; }
+.after-desktop-main .after-transfer-info-row { min-height: 34px; padding: 8px 0; }
+.after-desktop-main .after-transfer-info-label { font-size: 10px; }
+.after-desktop-main .after-transfer-info-value { font-size: 11px; }
+.after-desktop-main .after-transfer-checkbox { min-height: 39px; font-size: 11px; }
+.after-desktop-main .after-af02 > .figma-callout,
+.after-desktop-main .after-af02 > .after-transfer-section-title,
+.after-desktop-main .after-af02 > .after-sequence-list,
+.after-desktop-main .after-af02 > .after-transfer-actions,
+.after-desktop-main .after-af02 > .after-transfer-footer-note,
+.after-desktop-main .after-af06 > .figma-callout,
+.after-desktop-main .after-af06 > .after-transfer-section-title,
+.after-desktop-main .after-af06 > .after-board-next,
+.after-desktop-main .after-af06 > .after-transfer-footer-note { grid-column: 1 / -1; }
+.after-desktop-main .after-af02 > .after-sequence-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.after-desktop-main .after-sequence-card { min-height: 84px; padding: 13px; }
+.after-desktop-main .after-sequence-copy strong { font-size: 12px; }
+.after-desktop-main .after-sequence-copy span { font-size: 10px; }
+.after-desktop-main .after-sequence-status { min-height: 32px; font-size: 10px; }
+.after-desktop-main .after-af03 > .after-contact-card { margin-top: 0; padding: 17px; }
+.after-desktop-main .after-contact-title { font-size: 13px; }
+.after-desktop-main .after-transfer-radio { min-height: 32px; font-size: 11px; }
+.after-desktop-main .after-transfer-field-label { font-size: 9px; }
+.after-desktop-main .after-transfer-field input { min-height: 36px; font-size: 11px; }
+.after-desktop-main .after-af03 > .figma-callout,
+.after-desktop-main .after-af03 > .after-transfer-actions,
+.after-desktop-main .after-af03 > .after-transfer-footer-note { grid-column: 1 / -1; }
+.after-desktop-main .after-af04 > .after-evidence-progress-card,
+.after-desktop-main .after-af04 > .after-evidence-section,
+.after-desktop-main .after-af04 > .after-transfer-actions { grid-column: 1 / -1; }
+.after-desktop-main .after-evidence-progress-card { margin-top: 0; padding: 17px; }
+.after-desktop-main .after-evidence-progress-heading { font-size: 13px; }
+.after-desktop-main .after-evidence-section { margin-top: 0; }
+.after-desktop-main .after-evidence-row { min-height: 55px; padding: 8px 10px; }
+.after-desktop-main .after-evidence-copy strong { font-size: 11px; }
+.after-desktop-main .after-evidence-copy small,
+.after-desktop-main .after-evidence-state { font-size: 9px; }
+.after-desktop-main .after-af05 > .after-original-card,
+.after-desktop-main .after-af05 > .after-facts-section,
+.after-desktop-main .after-af05 > .after-transfer-actions { margin-top: 0; }
+.after-desktop-main .after-original-card { padding: 18px; }
+.after-desktop-main .after-original-heading strong { font-size: 10px; }
+.after-desktop-main .after-original-bank { font-size: 12px; }
+.after-desktop-main .after-original-amount { font-size: 28px; }
+.after-desktop-main .after-original-card small { font-size: 9px; }
+.after-desktop-main .after-facts-section .after-transfer-section-title { margin-bottom: 11px; }
+.after-desktop-main .after-fact-row { min-height: 55px; padding: 9px 10px; }
+.after-desktop-main .after-fact-copy strong { font-size: 11px; }
+.after-desktop-main .after-fact-copy small,
+.after-desktop-main .after-fact-status { font-size: 9px; }
+.after-desktop-main .after-af06 > .after-board-group { margin-top: 0; }
+.after-desktop-main .after-board-group { padding: 13px 14px; }
+.after-desktop-main .after-board-group-title { font-size: 10px; }
+.after-desktop-main .after-board-check,
+.after-desktop-main .after-board-static-item { font-size: 10px; }
+.after-desktop-main .after-af07 > .after-report-preview { margin-top: 0; }
+.after-desktop-main .after-af07 > .after-branch-grid { margin-top: 0; }
+.after-desktop-main .after-af07 > .after-report-preview { grid-column: 1; }
+.after-desktop-main .after-af07 > .after-branch-grid { grid-column: 2; align-content: start; }
+.after-desktop-main .after-report-preview { padding: 18px; }
+.after-desktop-main .after-report-title { font-size: 20px; line-height: 26px; }
+.after-desktop-main .after-report-meta { font-size: 9px; }
+.after-desktop-main .after-report-row { padding: 11px 0; }
+.after-desktop-main .after-report-row strong { font-size: 11px; }
+.after-desktop-main .after-report-row span { font-size: 10px; line-height: 14px; }
+.after-desktop-main .after-branch-card { padding: 15px; }
+.after-desktop-main .after-branch-card p { font-size: 10px; line-height: 1.5; }
+.after-desktop-main .after-branch-button { width: 100%; min-height: 39px; font-size: 10px; }
+.after-desktop-main .after-transfer-mobile > .figma-mobile-body > .service-guide-link { display: flex; width: fit-content; margin: 14px 0 0 auto; }
+
+@media (max-width: 1180px) and (min-width: 681px) {
+  .after-desktop-shell { grid-template-columns: 196px minmax(0, 1fr); }
+  .after-desktop-summary { position: static; grid-column: 2; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); align-items: start; }
+  .after-desktop-summary-note { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) and (min-width: 681px) {
+  .after-desktop-shell { grid-template-columns: 180px minmax(0, 1fr); gap: 12px; }
+  .after-desktop-main .after-transfer-mobile .figma-mobile-body { padding: 24px 22px 30px; }
+  .after-desktop-main .after-transfer-content { grid-template-columns: 1fr; gap: 16px; }
+  .after-desktop-main .after-transfer-content > * { grid-column: 1 / -1 !important; }
+  .after-desktop-main .after-af00 > .after-transfer-help-list { grid-template-columns: 1fr; }
+  .after-desktop-main .after-af01 .after-transfer-situation { grid-template-columns: 1fr; }
+  .after-desktop-main .after-af02 > .after-sequence-list { grid-template-columns: 1fr; }
+  .after-desktop-main .after-af07 > .after-branch-grid { grid-column: 1 / -1; }
+}
+
+@media (max-width: 680px) {
+  .after-desktop-shell { display: block; width: 100%; }
+  .after-desktop-stepper, .after-desktop-summary { display: none; }
+  .after-desktop-main > .after-transfer-mobile {
+    width: 100%;
+    max-width: 390px;
+    height: 844px;
+    min-height: 700px;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid #d0d5dd;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .after-desktop-main .after-transfer-mobile .figma-mobile-topbar { height: 56px; padding: 0 19px; }
+  .after-desktop-main .after-transfer-mobile .figma-mobile-brand { font-size: 14px; }
+  .after-desktop-main .after-transfer-mobile .figma-mobile-progress { min-width: 68px; padding: 5px 10px; font-size: 10px; }
+  .after-desktop-main .after-transfer-mobile .figma-mobile-body { height: calc(100% - 56px); min-height: 0; overflow-y: auto; padding: 21px 16px 16px; }
+  .after-desktop-main .after-transfer-content { display: flex; flex-direction: column; gap: initial; }
+  .after-desktop-main .after-transfer-content > * { grid-column: auto !important; }
+  .after-desktop-main .after-transfer-content .after-transfer-title { font-size: 23px; line-height: 29px; }
+  .after-desktop-main .after-transfer-content .after-transfer-intro { font-size: 11px; line-height: 15px; }
+  .after-desktop-main .after-transfer-content .after-transfer-section-title { font-size: 12px; line-height: 16px; }
+  .after-desktop-main .after-transfer-content .figma-callout { margin-top: 14px; padding: 12px; }
+  .after-desktop-main .after-transfer-content .figma-callout-title { font-size: 11px; }
+  .after-desktop-main .after-transfer-content .figma-callout-copy { font-size: 10px; }
+  .after-desktop-main .after-transfer-content .after-transfer-actions { display: grid; gap: 9px; margin-top: 16px; }
+  .after-desktop-main .after-transfer-content .after-transfer-actions .button { width: 100%; min-width: 0; }
+  .after-desktop-main .after-af00 > .after-transfer-help-list { grid-template-columns: 1fr; gap: 8px; }
+  .after-desktop-main .after-af01 .after-transfer-situation { display: block; margin-top: 17px; }
+  .after-desktop-main .after-af02 > .after-sequence-list { grid-template-columns: 1fr; gap: 8px; }
+  .after-desktop-main .after-af07 > .after-branch-grid { grid-column: auto; }
+  .after-desktop-main .after-transfer-mobile > .figma-mobile-body > .service-guide-link { margin: 8px auto 0; }
 }

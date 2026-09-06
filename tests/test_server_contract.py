@@ -129,7 +129,7 @@ class ServerContractTests(unittest.TestCase):
     def test_first_use_guides_cover_home_and_each_service(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         styles_css = (WEB_ROOT / "styles.css").read_text(encoding="utf-8")
-        for marker in ("ONBOARDING_STEPS", "SERVICE_TOUR_STEPS", "focusGuideTarget", "positionCoachmark", "open-service-tour", "service-tour-next", "service-tour-prev", "service-tour-skip"):
+        for marker in ("ONBOARDING_STEPS", "SERVICE_TOUR_STEPS", "SERVICE_SCREEN_TOURS", "serviceTourContextForScreen", "focusGuideTarget", "positionCoachmark", "open-service-tour", "service-tour-next", "service-tour-prev", "service-tour-skip"):
             self.assertIn(marker, app_js)
         for service in ("before", "after", "frozen", "shield"):
             self.assertIn(f"{service}: {{", app_js)
