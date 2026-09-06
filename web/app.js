@@ -1425,6 +1425,7 @@ function rememberOnboardingDismissal() {
 function dismissOnboarding(remember = true) {
   state.onboardingOpen = false;
   state.onboardingFocusPending = false;
+  clearGuideTarget();
   if (remember) rememberOnboardingDismissal();
 }
 
@@ -1450,11 +1451,12 @@ function renderOnboarding() {
     "aria-modal": "false",
     "aria-labelledby": "onboarding-title",
     "aria-describedby": "onboarding-description",
+    "data-positioning": "true",
   });
   const header = el("div", "onboarding-guide-header");
   append(header, el("span", "onboarding-kicker", "처음 사용 안내"), el("span", "onboarding-progress", `${state.onboardingStep + 1} / ${ONBOARDING_STEPS.length}`));
   const body = el("div", "onboarding-guide-body");
-  append(body, el("h2", "onboarding-title", step.title), el("p", "onboarding-description", step.description));
+  append(body, setAttrs(el("h2", "onboarding-title", step.title), { id: "onboarding-title" }), setAttrs(el("p", "onboarding-description", step.description), { id: "onboarding-description" }));
   const footer = el("div", "onboarding-guide-footer");
   const controls = el("div", "onboarding-controls");
   append(
@@ -1511,6 +1513,7 @@ function dismissServiceTour(remember = true) {
   const kind = state.serviceTourKind;
   state.serviceTourOpen = false;
   state.serviceTourFocusPending = false;
+  clearGuideTarget();
   if (remember && kind) rememberServiceTourDismissal(kind);
 }
 
@@ -1536,11 +1539,12 @@ function renderServiceTour() {
     "aria-modal": "false",
     "aria-labelledby": "service-tour-title",
     "aria-describedby": "service-tour-description",
+    "data-positioning": "true",
   });
   const header = el("div", "onboarding-guide-header");
   append(header, el("span", "onboarding-kicker", tour.label), el("span", "onboarding-progress", `${state.serviceTourStep + 1} / ${tour.steps.length}`));
   const body = el("div", "onboarding-guide-body");
-  append(body, el("h2", "onboarding-title", step.title), el("p", "onboarding-description", step.description));
+  append(body, setAttrs(el("h2", "onboarding-title", step.title), { id: "service-tour-title" }), setAttrs(el("p", "onboarding-description", step.description), { id: "service-tour-description" }));
   const footer = el("div", "onboarding-guide-footer");
   const controls = el("div", "onboarding-controls");
   append(
@@ -1566,6 +1570,101 @@ function updateNav() {
     node.classList.toggle("is-active", active);
   });
 }
+
+function clearGuideTarget() {
+  document.querySelectorAll(".onboarding-focus").forEach((node) => node.classList.remove("onboarding-focus"));
+}
+
+function clampGuideValue(value, min, max) {
+  return Math.min(Math.max(value, min), Math.max(min, max));
+}
+
+function positionCoachmark(target, guide) {
+  if (!target || !guide) return;
+  const targetRect = target.getBoundingClientRect();
+  const guideRect = guide.getBoundingClientRect();
+  const margin = 12;
+  const gap = 18;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const candidates = [
+    { placement: "right", left: targetRect.right + gap, top: targetRect.top + (targetRect.height - guideRect.height) / 2 },
+    { placement: "left", left: targetRect.left - guideRect.width - gap, top: targetRect.top + (targetRect.height - guideRect.height) / 2 },
+    { placement: "bottom", left: targetRect.left + (targetRect.width - guideRect.width) / 2, top: targetRect.bottom + gap },
+    { placement: "top", left: targetRect.left + (targetRect.width - guideRect.width) / 2, top: targetRect.top - guideRect.height - gap },
+  ];
+  const fits = (candidate) => candidate.left >= margin && candidate.top >= margin && candidate.left + guideRect.width <= viewportWidth - margin && candidate.top + guideRect.height <= viewportHeight - margin;
+  const candidate = candidates.find(fits) || candidates.find(({ placement }) => placement === "bottom") || candidates[0];
+  const left = clampGuideValue(candidate.left, margin, viewportWidth - guideRect.width - margin);
+  const top = clampGuideValue(candidate.top, margin, viewportHeight - guideRect.height - margin);
+  const isSide = candidate.placement === "left" || candidate.placement === "right";
+  const arrowOffset = isSide
+    ? clampGuideValue(targetRect.top + targetRect.height / 2 - top, 16, guideRect.height - 16)
+    : clampGuideValue(targetRect.left + targetRect.width / 2 - left, 16, guideRect.width - 16);
+  guide.style.left = `${left}px`;
+  guide.style.top = `${top}px`;
+  guide.style.right = "auto";
+  guide.style.bottom = "auto";
+  guide.style.setProperty("--coach-arrow-offset", `${arrowOffset}px`);
+  guide.dataset.placement = candidate.placement;
+  guide.removeAttribute("data-positioning");
+}
+
+function resetCoachmarkPosition(guide) {
+  if (!guide) return;
+  guide.style.removeProperty("left");
+  guide.style.removeProperty("top");
+  guide.style.removeProperty("right");
+  guide.style.removeProperty("bottom");
+  guide.style.removeProperty("--coach-arrow-offset");
+  guide.dataset.placement = "fallback";
+  guide.removeAttribute("data-positioning");
+}
+
+function focusGuideTarget(selector, guideSelector) {
+  clearGuideTarget();
+  const target = document.querySelector(selector);
+  const guide = document.querySelector(guideSelector);
+  if (target) {
+    target.classList.add("onboarding-focus");
+    target.scrollIntoView({ behavior: "auto", block: "center", inline: "nearest" });
+  }
+  window.requestAnimationFrame(() => {
+    const currentTarget = document.querySelector(selector);
+    const currentGuide = document.querySelector(guideSelector);
+    if (currentTarget) currentTarget.classList.add("onboarding-focus");
+    if (currentGuide && currentTarget) positionCoachmark(currentTarget, currentGuide);
+    else if (currentGuide) resetCoachmarkPosition(currentGuide);
+    currentGuide?.querySelector(".onboarding-next")?.focus();
+  });
+}
+
+function repositionActiveCoachmark() {
+  const guideSelector = state.onboardingOpen
+    ? ".onboarding-guide:not(.service-tour-guide)"
+    : state.serviceTourOpen
+      ? ".service-tour-guide"
+      : "";
+  if (!guideSelector) return;
+  const tourStep = state.onboardingOpen
+    ? ONBOARDING_STEPS[state.onboardingStep]
+    : SERVICE_TOUR_STEPS[state.serviceTourKind]?.steps[state.serviceTourStep];
+  const target = tourStep ? document.querySelector(tourStep.target) : null;
+  const guide = document.querySelector(guideSelector);
+  if (target && guide) positionCoachmark(target, guide);
+}
+
+let coachmarkRepositionFrame = 0;
+function scheduleCoachmarkReposition() {
+  if (coachmarkRepositionFrame || (!state.onboardingOpen && !state.serviceTourOpen)) return;
+  coachmarkRepositionFrame = window.requestAnimationFrame(() => {
+    coachmarkRepositionFrame = 0;
+    repositionActiveCoachmark();
+  });
+}
+
+window.addEventListener("resize", scheduleCoachmarkReposition);
+window.addEventListener("scroll", scheduleCoachmarkReposition, { passive: true });
 
 function renderOverview() {
   const page = pageShell("00_OVERVIEW", "FinGuard — 서비스 개요", "의심 메시지를 받은 순간부터, 사람의 확인과 안전한 다음 행동까지 이어지는 서비스 흐름입니다.", "overview-page");
@@ -3080,19 +3179,17 @@ function render() {
     state.onboardingFocusPending = false;
     window.requestAnimationFrame(() => {
       const step = ONBOARDING_STEPS[state.onboardingStep] || ONBOARDING_STEPS[0];
-      const target = document.querySelector(step.target);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-      document.querySelector(".onboarding-next")?.focus();
+      focusGuideTarget(step.target, ".onboarding-guide:not(.service-tour-guide)");
     });
   } else if (state.serviceTourOpen && state.serviceTourFocusPending) {
     state.serviceTourFocusPending = false;
     window.requestAnimationFrame(() => {
       const tour = SERVICE_TOUR_STEPS[state.serviceTourKind];
       const step = tour?.steps[state.serviceTourStep] || tour?.steps[0];
-      const target = step ? document.querySelector(step.target) : null;
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
-      document.querySelector(".service-tour-guide .onboarding-next")?.focus();
+      if (step) focusGuideTarget(step.target, ".service-tour-guide");
     });
+  } else if (!state.onboardingOpen && !state.serviceTourOpen) {
+    clearGuideTarget();
   }
 }
 

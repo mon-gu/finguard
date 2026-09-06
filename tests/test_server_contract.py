@@ -129,11 +129,11 @@ class ServerContractTests(unittest.TestCase):
     def test_first_use_guides_cover_home_and_each_service(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         styles_css = (WEB_ROOT / "styles.css").read_text(encoding="utf-8")
-        for marker in ("ONBOARDING_STEPS", "SERVICE_TOUR_STEPS", "open-service-tour", "service-tour-next", "service-tour-prev", "service-tour-skip"):
+        for marker in ("ONBOARDING_STEPS", "SERVICE_TOUR_STEPS", "focusGuideTarget", "positionCoachmark", "open-service-tour", "service-tour-next", "service-tour-prev", "service-tour-skip"):
             self.assertIn(marker, app_js)
         for service in ("before", "after", "frozen", "shield"):
             self.assertIn(f"{service}: {{", app_js)
-        for marker in ("onboarding-guide", "service-tour-guide", "service-guide-link", "onboarding-focus"):
+        for marker in ("onboarding-guide", "service-tour-guide", "service-guide-link", "onboarding-focus", "data-placement", "coach-arrow"):
             self.assertIn(marker, styles_css)
 
     def test_workspace_sidebar_exposes_sequential_progression(self) -> None:
