@@ -363,24 +363,24 @@ const ONBOARDING_STEPS = [
 
 const SERVICE_TOUR_STEPS = {
   before: {
-    label: "BEFORE · 행동 직전",
+    label: "행동 전 · 문자 점검",
     steps: [
       { target: ".before-capture-tabs", title: "원문을 넣는 방법을 고르세요", description: "스크린샷을 참고하거나 직접 메시지를 붙여넣을 수 있습니다. 이미지 OCR은 아직 지원하지 않으므로 원문을 직접 확인해 주세요." },
       { target: ".before-capture-sample", title: "예시로 먼저 연습할 수 있습니다", description: "실제 개인정보 대신 예시 메시지를 불러와 어떤 위험 신호를 찾는지 먼저 확인할 수 있습니다." },
       { target: ".before-capture-primary", title: "메시지 점검하기를 누르세요", description: "입력한 한 건만 분석합니다. 결과에서 위험 신호와 지금 멈춰야 할 행동을 바로 확인합니다." },
-      { target: ".before-capture-alt", title: "계좌가 이미 막혔다면 FROZEN으로 이동합니다", description: "행동 전 점검과 계좌가 막힌 후 자료 정리는 다른 흐름입니다. 상황에 맞는 서비스로 이동하세요." },
+      { target: ".before-capture-alt", title: "계좌가 이미 막혔다면 계좌가 막힌 후로 이동합니다", description: "행동 전 점검과 계좌가 막힌 후 자료 정리는 다른 흐름입니다. 상황에 맞는 서비스로 이동하세요." },
     ],
   },
   after: {
-    label: "AFTER · 송금 직후",
+    label: "송금 직후 · 72시간 대응",
     steps: [
       { target: ".after-transfer-title", title: "72시간 순서를 확인합니다", description: "송금 직후에는 추가 행동을 줄이고, 공식 확인과 증거 보존 순서를 단계별로 따라갑니다." },
       { target: ".after-transfer-mobile .figma-mobile-body", title: "현재 화면의 행동만 확인하세요", description: "추가 송금 중단, 공식 채널 연락, 원본 보존처럼 현재 단계에서 필요한 행동을 먼저 보여줍니다." },
-      { target: ".after-transfer-actions, .after-branch-grid", title: "다음 화면으로 이동합니다", description: "화면의 다음 행동을 누르면 초기 대응 기록이 이어집니다. 마지막에는 계좌 보호나 소명 모듈로 연결할 수 있습니다." },
+      { target: ".after-transfer-actions, .after-branch-grid", title: "다음 화면으로 이동합니다", description: "화면의 다음 행동을 누르면 초기 대응 기록이 이어집니다. 마지막에는 계좌 보호나 계좌가 막힌 후 자료 정리로 연결할 수 있습니다." },
     ],
   },
   frozen: {
-    label: "FROZEN · 계좌가 막힌 후",
+    label: "계좌가 막힌 후 · 설명자료",
     steps: [
       { target: ".figma-home-cases, .figma-entry-tabs, .record-rail", title: "예시 또는 내 자료로 시작합니다", description: "처음에는 준비된 예시를 눌러 전체 흐름을 확인하고, 필요하면 받은 메시지를 직접 확인합니다. 실제 개인정보 대신 합성 예시를 사용하세요." },
       { target: ".figma-mobile-actions, .figma-message-form, .figma-result-content, .record-content", title: "받은 내용과 확인 항목을 차례로 봅니다", description: "받은 메시지는 그대로 보존하고, 사람이 확인한 사실과 수정 이력을 따로 남깁니다. AI가 자동으로 확정하지 않습니다." },
@@ -389,7 +389,7 @@ const SERVICE_TOUR_STEPS = {
     ],
   },
   shield: {
-    label: "SHIELD · 불법 추심 대응",
+    label: "불법 추심 · 연락 기록",
     steps: [
       { target: ".shield-flow-progress, .record-rail", title: "연락을 안전하게 기록합니다", description: "긴급한 신체 위협이 있으면 안전 확보와 112가 먼저입니다. 그 외에는 연락처·시각·채널·요구 내용을 남깁니다." },
       { target: ".shield-checklist, .record-content", title: "원문과 위험 신호를 분리합니다", description: "문자·통화·스크린샷은 원본으로 보관하고, 협박·기한·추가 송금 요구는 별도 항목으로 정리합니다." },
@@ -458,21 +458,21 @@ const AFTER_STEPS = [
 
 const SHIELD_STEPS = [
   {
-    kicker: "SHIELD · 불법 추심 대응",
+    kicker: "불법 추심 · 연락 기록",
     title: "반복 연락과 협박을\n기록하세요",
     intro: "연락 원문과 시각을 남기고,\n공식 상담에 가져갈 자료를 준비합니다.",
     calloutTitle: "압박을 받으면 확인·안전 확보부터",
     calloutCopy: "위협·반복 연락·가족이나 직장에 알리겠다는 말은 답변보다 기록과 안전 확보가 먼저입니다.",
   },
   {
-    kicker: "SHIELD · 연락 기록",
+    kicker: "불법 추심 · 연락 기록",
     title: "연락을 증거로\n남겨두세요",
     intro: "발신자·시각·채널·요구 내용을\n한 번에 확인할 수 있게 묶습니다.",
     calloutTitle: "기록할 4가지",
     calloutCopy: "전화번호·연락 시각 · 원문·녹취/스크린샷 · 요구한 금액과 기한",
   },
   {
-    kicker: "SHIELD · 안전한 다음 행동",
+    kicker: "불법 추심 · 공식 도움",
     title: "기록을 정리하고,\n공식 도움을 받으세요",
     intro: "직접 답변해야 한다는 뜻은 아닙니다.\n안전과 상황에 맞는 공식 상담을 우선합니다.",
     calloutTitle: "공식 상담·신고용 패키지",
@@ -497,7 +497,7 @@ function workspaceStepIndex(screen) {
 
 const SERVICE_SCREEN_TOURS = {
   before: {
-    label: "BEFORE · 행동 직전",
+    label: "행동 전 · 문자 점검",
     steps: [
       { target: ".before-capture-tabs", title: "원문 입력 방식을 고르세요", description: "스크린샷을 참고하거나 직접 메시지를 붙여넣습니다. 지금 확인할 메시지 한 건만 준비하면 됩니다." },
       { target: ".before-capture-sample", title: "위험 신호를 먼저 살펴보세요", description: "시간 제한·금전 요구처럼 행동을 서두르게 하는 표현을 확인합니다. 예시로 먼저 연습할 수도 있습니다." },
@@ -505,7 +505,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "before-result": {
-    label: "BEFORE · 점검 결과",
+    label: "행동 전 · 점검 결과",
     steps: [
       { target: ".before-result-stop", title: "먼저 멈춰야 할 행동을 확인하세요", description: "화면 맨 위의 안내가 현재 가장 먼저 중단할 송금·인증·클릭 행동을 알려줍니다." },
       { target: ".before-result-evidence", title: "근거 문장을 확인하세요", description: "위험 신호의 근거와 분석 상태를 원문과 대조합니다. 위험 점수만 보고 결론 내리지 않습니다." },
@@ -513,14 +513,14 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "after-0": {
-    label: "AFTER · 시작 안내",
+    label: "송금 직후 · 시작 안내",
     steps: [
       { target: ".after-transfer-help-list", title: "송금 직후의 순서를 확인하세요", description: "추가 행동 중단 → 공식 연락 → 증거 보존 순서로 72시간 대응을 정리합니다." },
       { target: ".after-transfer-actions", title: "초기 대응을 시작하세요", description: "긴급 대응 시작을 누르면 다음 화면으로 이동합니다. 샘플 사건으로 전체 흐름을 먼저 체험할 수도 있습니다." },
     ],
   },
   "after-1": {
-    label: "AFTER · 송금 정보",
+    label: "송금 직후 · 송금 정보",
     steps: [
       { target: ".after-upload-card", title: "송금확인증을 선택하세요", description: "PNG·JPG 송금확인증을 선택하면 이 사건의 증거로 확인할 수 있습니다. 실제 개인정보 대신 합성자료를 사용하세요." },
       { target: ".after-transfer-ai-card", title: "AI가 읽은 값을 확인하세요", description: "금액·시각·수취인 같은 추출값은 초안입니다. 원본과 대조한 뒤 다음 단계로 넘어갑니다." },
@@ -528,21 +528,21 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "after-2": {
-    label: "AFTER · 즉시 대응",
+    label: "송금 직후 · 즉시 대응",
     steps: [
       { target: ".after-sequence-list", title: "지금 해야 할 순서를 체크하세요", description: "추가 행동 중단, 금융회사 연락, 경찰 신고 준비, 증거 원본 보존을 순서대로 확인합니다." },
       { target: ".after-transfer-actions", title: "공식 연락 기록으로 이동하세요", description: "실제 연락·신고를 대신 실행하지 않습니다. 공식 채널에서 확인한 결과만 다음 화면에 기록합니다." },
     ],
   },
   "after-3": {
-    label: "AFTER · 공식 연락 기록",
+    label: "송금 직후 · 공식 연락 기록",
     steps: [
       { target: ".after-contact-card", title: "연락 결과를 분리해 기록하세요", description: "금융회사와 경찰의 상태·시각·접수번호를 각각 기록합니다. 메시지 속 연락처로 한 연락은 공식 기록과 구분합니다." },
       { target: ".after-transfer-actions", title: "기록을 저장하고 증거로 이동하세요", description: "연락 결과 기록을 마치면 증거 원본을 한곳에 모으는 다음 단계로 넘어갑니다." },
     ],
   },
   "after-4": {
-    label: "AFTER · 증거 보관함",
+    label: "송금 직후 · 증거 보관함",
     steps: [
       { target: ".after-evidence-progress-card", title: "증거 확보 상태를 확인하세요", description: "현재 확보된 원본과 빠진 자료를 숫자로 확인합니다. 부족한 자료는 숨기지 않고 별도로 표시합니다." },
       { target: ".after-evidence-section", title: "원본별 상태를 점검하세요", description: "송금확인증·메시지·통화기록 등 각 원본을 보관했는지 직접 체크합니다." },
@@ -550,7 +550,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "after-5": {
-    label: "AFTER · 사실 확인",
+    label: "송금 직후 · 사실 확인",
     steps: [
       { target: ".after-original-card", title: "원본을 먼저 보세요", description: "AI가 읽은 값보다 원본 송금확인증을 먼저 확인하고, 연결된 증거 ID를 함께 살펴봅니다." },
       { target: ".after-facts-section", title: "추출된 사실을 직접 확인하세요", description: "확인·수정·추가 확인 상태를 바꾸며 원본과 맞지 않는 값은 확정하지 않습니다." },
@@ -558,14 +558,14 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "after-6": {
-    label: "AFTER · 72시간 대응 보드",
+    label: "송금 직후 · 72시간 대응 보드",
     steps: [
       { target: ".after-board-group", title: "오늘 해야 할 일을 체크하세요", description: "지금·오늘·3영업일 내·추후 추적으로 나뉜 항목을 보며 미완료 행동을 확인합니다." },
       { target: ".after-board-next", title: "다음 공식 행동을 이어가세요", description: "금융회사 공식 연락 결과를 기록하거나 마지막 기록팩 화면으로 이동할 수 있습니다." },
     ],
   },
   "after-7": {
-    label: "AFTER · 초기 대응 기록팩",
+    label: "송금 직후 · 초기 대응 기록팩",
     steps: [
       { target: ".after-report-preview", title: "기록팩 내용을 검토하세요", description: "확인된 사실·연락 기록·증거 색인이 한 문서로 묶였는지 확인합니다." },
       { target: ".after-branch-grid", title: "상황에 맞는 후속 흐름을 고르세요", description: "인증정보·원격제어 문제가 있으면 보호 행동으로, 계좌가 막혔다면 FROZEN 소명 흐름으로 이동합니다." },
@@ -573,14 +573,14 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-s00": {
-    label: "FROZEN · 사건 시작",
+    label: "계좌가 막힌 후 · 사건 시작",
     steps: [
       { target: ".figma-home-cases", title: "예시 사건을 골라보세요", description: "먼저 준비된 예시를 선택해 계좌가 막힌 후 자료를 정리하는 흐름을 확인합니다." },
       { target: ".figma-mobile-actions", title: "자료 정리를 시작하세요", description: "선택한 받은 메시지를 확인한 뒤 이 탭에서만 자료를 정리합니다." },
     ],
   },
   "frozen-g01": {
-    label: "FROZEN · 메시지 확인",
+    label: "계좌가 막힌 후 · 메시지 확인",
     steps: [
       { target: ".figma-demo-primary", title: "예시로 먼저 체험하세요", description: "실제 개인정보 없이 준비된 예시로 위험 신호와 다음 행동을 바로 확인합니다." },
       { target: ".figma-entry-tabs", title: "내 자료로 확인할 수도 있습니다", description: "받은 메시지를 붙여넣거나 스크린샷을 참고할 수 있습니다. 이미지 내용을 자동으로 읽는 기능은 아직 준비 중입니다." },
@@ -588,7 +588,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-g02": {
-    label: "FROZEN · 분석 결과",
+    label: "계좌가 막힌 후 · 분석 결과",
     steps: [
       { target: ".figma-evidence-list", title: "근거 항목을 확인하세요", description: "원문에서 추출된 요구·긴급성·비밀 요구를 원문과 비교합니다." },
       { target: ".figma-result-content .figma-callout", title: "사람 확인 원칙을 기억하세요", description: "자동 분석은 사실이나 적법성을 확정하지 않습니다. 공식 채널에서 독립적으로 확인합니다." },
@@ -596,7 +596,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-g03": {
-    label: "FROZEN · 자료 사용 확인",
+    label: "계좌가 막힌 후 · 자료 사용 확인",
     steps: [
       { target: ".figma-consent-list", title: "보관 규칙을 확인하세요", description: "이 탭에서 무엇을 정리하고 무엇을 하지 않는지 세 항목을 읽고 직접 체크합니다." },
       { target: ".figma-storage-summary", title: "저장 범위를 확인하세요", description: "현재 MVP는 서버나 브라우저 저장소에 보관하지 않습니다. 필요한 자료는 직접 내려받아 보관합니다." },
@@ -604,14 +604,14 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-c01": {
-    label: "FROZEN · 사건 개요",
+    label: "계좌가 막힌 후 · 사건 개요",
     steps: [
       { target: ".figma-evidence-list, .record-summary-grid, .record-empty, .record-content", title: "현재 사건 상태를 읽으세요", description: "연결된 원문·확인할 항목·보관 범위·결과물을 한눈에 확인합니다." },
       { target: ".figma-mobile-actions, .record-rail", title: "자료 수집으로 이동하세요", description: "자료 상태 확인을 누르거나 사이드바의 다음 단계를 열어 원문을 추가합니다." },
     ],
   },
   "frozen-c02": {
-    label: "FROZEN · 자료 수집",
+    label: "계좌가 막힌 후 · 자료 수집",
     steps: [
       { target: ".record-intake-layout", title: "원문을 추가하세요", description: "자료 이름·종류·시각·출처와 원문을 입력합니다. 텍스트 원문은 수정하지 않고 보존합니다." },
       { target: "#record-intake", title: "추가 후 확인 화면으로 가세요", description: "원문 추가하고 확인하기를 누르면 문장 단위 확인 항목을 대조할 수 있습니다." },
@@ -619,7 +619,7 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-c03": {
-    label: "FROZEN · 원문·사실 확인",
+    label: "계좌가 막힌 후 · 원문·사실 확인",
     steps: [
       { target: ".record-workbench, .record-empty, .record-content", title: "원문과 정리 항목을 나란히 보세요", description: "왼쪽 원문 목록에서 자료를 고르고 가운데 원문과 오른쪽 확인 항목을 비교합니다." },
       { target: ".record-review-form", title: "사람이 확인한 내용을 남기세요", description: "확인 상태와 메모를 직접 입력합니다. AI 추출값을 자동으로 확정하지 않습니다." },
@@ -627,49 +627,49 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "frozen-c04": {
-    label: "FROZEN · 거래 연결",
+    label: "계좌가 막힌 후 · 거래 연결",
     steps: [
       { target: ".record-summary-grid, .record-empty", title: "원문과 거래를 연결하세요", description: "주문·입금 자료를 나란히 확인하고 같은 식별자와 금액이 맞는지 직접 비교합니다." },
       { target: ".record-rail", title: "확인 결과를 다음 단계로 이어가세요", description: "일치하지 않거나 빠진 값은 이슈 검토와 자료 보완에서 별도로 남깁니다." },
     ],
   },
   "frozen-c05a": {
-    label: "FROZEN · 이슈 검토",
+    label: "계좌가 막힌 후 · 이슈 검토",
     steps: [
       { target: ".record-issue, .record-summary-grid, .record-empty", title: "확인된 이슈와 빠진 자료를 보세요", description: "원문·거래·사용자 설명 사이의 문제를 분리해 보고, 자동 결론 대신 확인 필요 상태로 남깁니다." },
       { target: ".record-rail", title: "상충 검토와 타임라인으로 이어가세요", description: "Case A의 이슈를 확인한 뒤 상충 자료, 시간 순서, 보고서 화면을 열 수 있습니다." },
     ],
   },
   "frozen-c05b": {
-    label: "FROZEN · 상충 검토",
+    label: "계좌가 막힌 후 · 상충 검토",
     steps: [
       { target: ".record-issue, .record-summary-grid, .record-empty", title: "상충을 먼저 분리하세요", description: "시간·금액·출처가 맞지 않는 항목을 한 화면에서 비교하고 결론을 확정하지 않습니다." },
       { target: ".record-rail", title: "보완 자료를 요청하세요", description: "확인할 수 없는 항목은 자료 보완 단계로 연결해 기존 원문과 확인 이력을 유지합니다." },
     ],
   },
   "frozen-c06": {
-    label: "FROZEN · 사건 타임라인",
+    label: "계좌가 막힌 후 · 사건 타임라인",
     steps: [
       { target: ".record-timeline-item, .record-empty, .record-content", title: "사건의 시간 순서를 확인하세요", description: "원문 수신·Gate 결과·사건 전환·AI 추출·검토 상태를 시간 순서로 읽습니다." },
       { target: ".record-rail", title: "보고서로 연결하세요", description: "시간 순서를 확인한 뒤 증거 연결 보고서에서 기관 검토용 자료 범위를 고릅니다." },
     ],
   },
   "frozen-c07": {
-    label: "FROZEN · 증거 연결 보고서",
+    label: "계좌가 막힌 후 · 설명자료 보고서",
     steps: [
       { target: ".record-report-grid", title: "설명자료 범위를 검토하세요", description: "원문·확인 내용·상충 항목이 어떤 근거로 묶였는지 미리보기와 색인으로 확인합니다." },
       { target: ".record-rail", title: "보고서를 검토하고 내려받으세요", description: "기관에 자동 전송하지 않습니다. 필요한 범위를 확인한 뒤 HTML 또는 인쇄/PDF로 직접 보관합니다." },
     ],
   },
   "frozen-c08": {
-    label: "FROZEN · 자료 보완",
+    label: "계좌가 막힌 후 · 자료 보완",
     steps: [
       { target: ".record-intake-layout", title: "빠진 원문을 보완하세요", description: "추가 자료를 입력해 기존 확인 상태와 새로 들어온 원문을 구분합니다." },
       { target: ".record-rail", title: "보완 후 원문을 다시 확인하세요", description: "자료를 추가한 뒤 원문·사실 확인과 보고서에서 변경 범위를 다시 검토합니다." },
     ],
   },
   "shield-0": {
-    label: "SHIELD · 안전 확보",
+    label: "불법 추심 · 안전 확보",
     steps: [
       { target: ".shield-flow-progress", title: "현재 대응 단계를 확인하세요", description: "불법 여부를 단정하기 전에 안전 확보·기록·공식 도움 순서부터 확인합니다." },
       { target: ".shield-checklist", title: "긴급 상황이면 안전이 먼저입니다", description: "직접적인 신체 위협이 있으면 안전한 곳으로 이동하고 112 신고를 우선합니다." },
@@ -677,70 +677,70 @@ const SERVICE_SCREEN_TOURS = {
     ],
   },
   "shield-1": {
-    label: "SHIELD · 연락 기록",
+    label: "불법 추심 · 연락 기록",
     steps: [
       { target: ".shield-checklist", title: "기록할 네 가지를 확인하세요", description: "발신자·시각·원문·요구 금액과 기한을 빠뜨리지 않고 원본으로 보관합니다." },
       { target: ".shield-flow-actions", title: "기록 작업 공간으로 이동하세요", description: "연락 한 건 기록하기를 누르면 원문과 단서를 사건에 연결할 수 있습니다." },
     ],
   },
   "shield-2": {
-    label: "SHIELD · 공식 도움",
+    label: "불법 추심 · 공식 도움",
     steps: [
       { target: ".shield-checklist", title: "상담 전에 정리할 내용을 확인하세요", description: "연락 방식의 문제와 채무의 존재·금액은 별도로 확인해야 합니다." },
       { target: ".shield-flow-actions", title: "상담 준비 자료를 만드세요", description: "기록을 묶어 공식 상담에 가져갈 준비를 합니다. FinGuard가 불법 여부를 확정하지는 않습니다." },
     ],
   },
   "shield-workspace-s01": {
-    label: "SHIELD · 사례 개요",
+    label: "불법 추심 · 사례 개요",
     steps: [
       { target: ".record-summary-grid, .record-empty", title: "추심 기록의 현재 상태를 보세요", description: "연락·자료 수, 확인한 항목, 추가 확인이 필요한 내용을 한눈에 확인합니다." },
       { target: ".record-rail", title: "연락 기록부터 추가하세요", description: "사이드바의 연락 기록에서 원문 한 건을 추가하면 위험 신호와 상담 자료를 연결할 수 있습니다." },
     ],
   },
   "shield-workspace-s02": {
-    label: "SHIELD · 연락 기록",
+    label: "불법 추심 · 연락 기록",
     steps: [
       { target: ".record-intake-layout", title: "연락 원문을 기록하세요", description: "발신자·시각·채널·요구 내용을 원문 그대로 입력합니다. 실제 개인정보 대신 합성자료를 사용하세요." },
       { target: "#record-intake", title: "원문을 추가하고 단서를 확인하세요", description: "원문을 추가하면 위험 신호 화면에서 협박·기한·추가 요구를 문장 단위로 대조합니다." },
     ],
   },
   "shield-workspace-s03": {
-    label: "SHIELD · 위험 신호",
+    label: "불법 추심 · 위험 신호",
     steps: [
       { target: ".record-workbench, .record-empty", title: "원문과 위험 신호를 비교하세요", description: "원문에서 찾은 단서는 참고용입니다. 불법 여부와 채무의 존재·금액을 자동 확정하지 않습니다." },
       { target: ".record-signals, .record-content", title: "확인할 항목을 남기세요", description: "사용자 확인·추가 확인 상태를 구분해 상담에 필요한 사실만 정리합니다." },
     ],
   },
   "shield-workspace-s04": {
-    label: "SHIELD · 증거 보관",
+    label: "불법 추심 · 증거 보관",
     steps: [
       { target: ".record-content", title: "원본 보관 상태를 확인하세요", description: "문자·메신저·녹취·스크린샷을 원본으로 보관하고, 상담에 포함할 자료를 직접 선택합니다." },
       { target: ".record-rail", title: "이슈와 타임라인으로 이어가세요", description: "자료를 보관한 뒤 빠진 항목과 연락 순서를 검토할 수 있습니다." },
     ],
   },
   "shield-workspace-s05": {
-    label: "SHIELD · 이슈 검토",
+    label: "불법 추심 · 이슈 검토",
     steps: [
       { target: ".record-issue, .record-content", title: "추가 확인이 필요한 지점을 보세요", description: "확인 전·사용자 확인·추가 확인을 나누어 빠진 자료와 설명을 찾습니다." },
       { target: ".record-rail", title: "상담 준비 자료로 연결하세요", description: "문제점을 확인한 뒤 타임라인과 상담 준비에서 전달 범위를 정리합니다." },
     ],
   },
   "shield-workspace-s06": {
-    label: "SHIELD · 연락 타임라인",
+    label: "불법 추심 · 연락 타임라인",
     steps: [
       { target: ".record-timeline-item, .record-content", title: "연락 순서를 확인하세요", description: "발신·반복 연락·요구·증거 보관 시점을 한 줄의 사건 흐름으로 읽습니다." },
       { target: ".record-rail", title: "공식 도움을 준비하세요", description: "시간 순서를 확인한 뒤 상담 준비 화면에서 원문과 확인 항목을 묶습니다." },
     ],
   },
   "shield-workspace-s07": {
-    label: "SHIELD · 상담 준비",
+    label: "불법 추심 · 상담 준비",
     steps: [
       { target: ".record-report-grid", title: "상담 자료 미리보기를 검토하세요", description: "선택한 연락 원문·위험 신호·확인 이력이 어떤 순서로 묶였는지 확인합니다." },
       { target: ".record-rail", title: "공식 기관에 직접 전달하세요", description: "상담 준비 자료는 보조자료입니다. 접수·대리인 선임·법적 판단을 자동으로 실행하지 않습니다." },
     ],
   },
   "shield-workspace-s08": {
-    label: "SHIELD · 자료 보완",
+    label: "불법 추심 · 자료 보완",
     steps: [
       { target: ".record-intake-layout, .record-content", title: "빠진 연락 자료를 보완하세요", description: "추가 원문을 입력해 기존 기록과 새로 확인할 자료를 구분합니다." },
       { target: ".record-rail", title: "보완한 자료를 다시 검토하세요", description: "위험 신호·이슈·상담 준비 화면에서 변경된 범위를 다시 확인합니다." },
@@ -1361,6 +1361,7 @@ function renderAfter00() {
       figmaPrimary("긴급 대응 시작", "after-next"),
       actionButton("샘플 사건으로 체험", "after-sample", "button figma-secondary"),
     ),
+    stageSwitchLinks("after"),
   );
   return afterTransferNotice(figmaMobileFrame("송금 직후", body, "after-mobile after-transfer-mobile"));
 }
@@ -1672,7 +1673,7 @@ function renderShieldFlow() {
     body.append(flowChecklist([
       ["협상하지 않기", "감정적인 설명이나 개인정보를 더 주지 않습니다."],
       ["공식 상담·신고", "기록을 묶어 적절한 공식 창구에 전달합니다."],
-      ["FROZEN 연결", "계좌가 막힌 사건은 설명자료 정리로 이어갑니다."],
+      ["계좌가 막힌 후 연결", "계좌가 막힌 사건은 설명자료 정리로 이어갑니다."],
     ], "shield-checklist"));
   }
 
@@ -1684,8 +1685,9 @@ function renderShieldFlow() {
   if (index > 0) actions.append(actionButton("이전 단계", "shield-back", "button figma-secondary"));
   else actions.append(screenButton("홈으로 돌아가기", "home", "button figma-secondary"));
   body.append(actions);
+  if (index === 0) body.append(stageSwitchLinks("shield"));
   body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "shield" }));
-  const page = append(figmaMobileFrame("SHIELD · " + (index + 1) + "/3", body, "shield-mobile"), renderServiceTour());
+  const page = append(figmaMobileFrame("불법 추심 · " + (index + 1) + "/3", body, "shield-mobile"), renderServiceTour());
   return renderShieldDesktopShell(page, index);
 }
 
@@ -1693,7 +1695,12 @@ function parseHash() {
   const raw = window.location.hash.replace(/^#/, "");
   if (!raw) return;
   const [screen, value] = raw.split("/");
-  if (["home", "overview", "s00", "g01", "g02", "g03", "before", "before-result", "after", "shield", "shield-workspace", "workspace", "c01", "c02", "c03", "c04", "c05a", "c05b", "c06", "c07", "c08", "reviewer", "components"].includes(screen)) {
+  if (screen === "components") {
+    state.screen = "overview";
+    writeHash();
+    return;
+  }
+  if (["home", "overview", "s00", "g01", "g02", "g03", "before", "before-result", "after", "shield", "shield-workspace", "workspace", "c01", "c02", "c03", "c04", "c05a", "c05b", "c06", "c07", "c08", "reviewer"].includes(screen)) {
     state.screen = screen;
   }
   if (screen === "before" || screen === "before-result") state.entryFlow = "before";
@@ -2001,7 +2008,7 @@ function renderOverview() {
   const lower = el("div", "overview-lower");
   const scope = panel("이번 프론트 범위", "실제 서버·로그인·장기 저장 없이 입력·분석·전환을 프론트에서 재현합니다.", "scope-panel");
   const scopeList = el("ul", "check-list");
-  ["S00/G01/G02 4개 상태/G03", "C01~C08 User Workspace v3", "R01~R06 Reviewer Workspace v3", "03_Components & States 토큰·상태·접근성"].forEach((item) => scopeList.append(el("li", "", item)));
+  ["S00/G01/G02 4개 상태/G03", "C01~C08 User Workspace v3", "R01~R06 Reviewer Workspace v3"].forEach((item) => scopeList.append(el("li", "", item)));
   scope.append(scopeList, el("p", "scope-note", "화면 안의 입력과 사건은 새로고침하면 사라지는 mock 상태입니다."));
   const quick = panel("빠른 상태 확인", "G02 결과 변형을 바로 비교합니다.", "quick-panel");
   const quickGrid = el("div", "quick-grid");
@@ -2103,7 +2110,7 @@ function renderG02() {
   const spec = resultSpec();
   const page = pageShell(`01_USER / G02 · ${spec.label}`, "Gate Result", "분석 결과는 안전 판정이 아니라 지금 멈출 행동과 독립 확인 경로를 보여주는 화면입니다.", "user-page");
   if (state.notice) page.append(el("div", "inline-notice", state.notice));
-  const switcher = panel("결과 상태 변형", "Figma Components에 정의된 네 가지 결과를 같은 위치에서 비교합니다.", "variant-panel");
+  const switcher = panel("결과 상태 변형", "네 가지 결과 상태를 같은 위치에서 비교합니다.", "variant-panel");
   const variants = el("div", "variant-tabs");
   Object.values(RESULT_STATES).forEach((item) => {
     const tab = button("", `variant-tab ${state.variant === item.label ? "is-active" : ""}`.trim(), { "data-screen": "g02", "data-variant": item.label });
@@ -2151,7 +2158,7 @@ function renderG03() {
   body.append(statusCard("E-001 · 첫 번째 증거", "Gate에서 확인한 원문과 분석 결과를 사건에 연결할 수 있습니다.", COLORS.info));
   const consentBlock = el("div", "consent-block");
   consentBlock.append(el("div", "phone-section-heading", el("strong", "", "동의 항목"), el("span", "", "선택")));
-  [["원문과 분석 결과를 사건에 연결합니다.", "필요한 정보만 사건에 포함합니다."], ["사건 데이터는 24시간 후 자동 삭제됩니다.", "보관 기간을 짧게 유지합니다."], ["담당자가 원문을 확인할 수 있습니다.", "사람의 원본 확인을 위해 필요합니다."]].forEach(([title, description], index) => {
+  [["원문과 분석 결과를 사건에 연결합니다.", "필요한 정보만 사건에 포함합니다."], ["사건 데이터는 24시간 후 자동 삭제됩니다.", "사건으로 선택한 자료에 적용되는 보관 정책입니다."], ["담당자가 원문을 확인할 수 있습니다.", "사람의 원본 확인을 위해 필요합니다."]].forEach(([title, description], index) => {
     const label = el("label", "consent-row");
     const check = setAttrs(el("input"), { type: "checkbox", checked: state.consentItems[index + 1] !== false, "data-consent-item": index + 1 });
     append(label, check, el("span", "consent-row-copy", el("strong", "", title), el("small", "", description)));
@@ -2159,11 +2166,11 @@ function renderG03() {
   });
   body.append(consentBlock);
   const stored = el("div", "stored-info");
-  append(stored, el("strong", "", "저장할 정보"), el("span", "", "원문 · 위험 신호 · 근거 문장 · 확인 시각"));
+  append(stored, el("strong", "", "정리되는 정보"), el("span", "", "원문 · 위험 신호 · 근거 문장 · 확인 시각"));
   body.append(stored);
   const actionBlock = el("div", "phone-actions");
   append(actionBlock, actionButton("동의하고 사건 생성", "create-case", "button button-primary button-wide"), actionButton("아니요, 보류", "hold-consent", "button button-quiet button-wide"));
-  body.append(actionBlock, el("p", "phone-disclaimer", "현재 프론트 preview에서는 실제 사건 생성·담당자 공유·장기 보관을 실행하지 않습니다."), phoneFooter("G03 · 사용자의 선택을 확인하는 단계"));
+  body.append(actionBlock, el("p", "phone-disclaimer", "입력 원문은 분석 처리 후 저장하지 않습니다. 사건으로 선택한 자료에는 24시간 자동 삭제 정책을 적용하며, 현재 프론트 preview에서는 담당자 공유·장기 보관을 실행하지 않습니다."), phoneFooter("G03 · 사용자의 선택을 확인하는 단계"));
   layout.append(mobileFrame({ code: "G03", title: "Case Consent", progress: "2 / 7", tone: COLORS.info, children: body }));
 
   const notes = panel("보관 선택의 경계", "동의 버튼을 눌러도 이 빌드에서는 화면만 전환됩니다.", "annotation-panel");
@@ -2571,79 +2578,6 @@ function renderReviewer() {
   return page;
 }
 
-function swatch(label, value, tone) {
-  const item = el("div", "swatch-item");
-  append(item, el("div", `swatch swatch-${tone}`), el("strong", "", label), el("small", "", value));
-  return item;
-}
-
-function renderComponents() {
-  const page = pageShell("03_COMPONENTS", "Components & States", "화면 전체에서 공통으로 사용하는 색상, 상태, 출처, 데이터 계보와 접근성 규칙입니다.", "components-page");
-  const foundation = panel("01 Foundations", "색을 신뢰도처럼 오해하지 않도록 역할 중심으로 사용합니다.", "component-section");
-  const swatches = el("div", "swatch-grid");
-  [["Primary", "#2563EB", COLORS.blue], ["Danger", "#B42318", COLORS.danger], ["Warning", "#B54708", COLORS.warning], ["Success", "#067647", COLORS.success], ["Info", "#175CD3", COLORS.info], ["Surface", "#FFFFFF", "surface"], ["Canvas", "#EEF2F6", "canvas"], ["Text", "#101828", "text"]].forEach(([label, value, tone]) => swatches.append(swatch(label, value, tone)));
-  foundation.append(swatches);
-  const typeRow = el("div", "type-row");
-  append(typeRow, el("div", "type-sample type-display", "FinGuard"), el("div", "type-sample type-heading", "사람이 원문을 확인하는 화면"), el("div", "type-sample type-body", "본문 14–16px · line-height 1.5"));
-  foundation.append(typeRow);
-
-  const core = panel("02 Core components", "공통 버튼·칩·근거 카드의 모양과 역할입니다.", "component-section");
-  const coreGrid = el("div", "component-grid");
-  const buttons = el("div", "component-demo-card");
-  append(buttons, el("h3", "component-demo-title", "Buttons & chips"), button("주요 행동", "button button-primary"), button("보조 행동", "button button-secondary"), button("텍스트 링크 →", "link-button"), el("div", "demo-chip-row", badge("DANGER", COLORS.danger), badge("AI_EXTRACTED", COLORS.neutral), badge("USER_CONFIRMED", COLORS.blue)));
-  const evidence = el("div", "component-demo-card");
-  append(evidence, el("h3", "component-demo-title", "Evidence & fact cards"), evidenceRow("기관 사칭", "금융감독원입니다", "AI_EXTRACTED"), evidenceRow("사람 확인", "원문과 일치", "USER_CONFIRMED"), evidenceRow("상충", "추가 확인 필요", "NEEDS_REVIEW"));
-  const states = el("div", "component-demo-card");
-  append(states, el("h3", "component-demo-title", "Product states"), statusCard("지금 중단할 행동", "송금·인증·링크 클릭을 멈추세요.", COLORS.danger), statusCard("독립적으로 확인", "공식 앱이나 대표번호로 확인하세요.", COLORS.info));
-  coreGrid.append(buttons, evidence, states);
-  core.append(coreGrid);
-
-  const product = panel("03 Product states", "결과·사건·로딩·빈 상태·오류를 같은 규칙으로 표현합니다.", "component-section");
-  const productGrid = el("div", "product-state-grid");
-  [["Risk result states", Object.values(RESULT_STATES).map((item) => [item.label, item.title, item.tone])], ["Case lifecycle", [["CASE_CREATED", "사건 생성", COLORS.info], ["NEEDS_REVIEW", "사람 확인 필요", COLORS.warning], ["CONFLICT", "상충 자료", COLORS.warning], ["COMPLETED", "검토 완료", COLORS.success]]], ["Loading · Empty · Error", [["LOADING", "자료를 확인하는 중", COLORS.info], ["EMPTY", "아직 연결된 자료 없음", COLORS.neutral], ["ERROR", "다시 시도해 주세요", COLORS.danger]]]].forEach(([title, values]) => {
-    const card = el("div", "product-state-card");
-    card.append(el("h3", "component-demo-title", title));
-    values.forEach(([label, description, tone]) => {
-      const row = el("div", "product-state-row");
-      append(row, badge(label, tone), el("span", "", description));
-      card.append(row);
-    });
-    productGrid.append(card);
-  });
-  product.append(productGrid);
-
-  const governance = panel("04 Data lineage, interaction & governance", "데이터가 어디에서 왔고, 누가 확인했으며, 어떤 행동으로 이어지는지 표시합니다.", "component-section");
-  const governanceGrid = el("div", "governance-grid");
-  const lineage = el("div", "governance-card");
-  lineage.append(el("h3", "component-demo-title", "Data lineage"));
-  const line = el("div", "lineage-flow");
-  [["원문", "ORIGINAL", COLORS.blue], ["AI 추출", "AI_EXTRACTED", COLORS.neutral], ["사람 확인", "USER_CONFIRMED", COLORS.success], ["보고서", "REPORT", COLORS.info]].forEach(([title, label, tone], index) => {
-    const item = el("div", "lineage-item");
-    append(item, badge(label, tone), el("strong", "", title));
-    line.append(item);
-    if (index < 3) line.append(el("span", "lineage-arrow", "→"));
-  });
-  lineage.append(line);
-  const consent = el("div", "governance-card");
-  consent.append(el("h3", "component-demo-title", "Consent & retention"), textBlock("기본", "저장하지 않음"), textBlock("선택", "사건으로 보관"), textBlock("범위", "필요 정보만 · 24시간"));
-  const accessibility = el("div", "governance-card");
-  accessibility.append(el("h3", "component-demo-title", "Accessibility & intent"));
-  ["주요 CTA는 52px 내외", "선택칩·행은 최소 44–48px", "하지 말 행동을 첫 viewport에 표시", "색상만으로 상태를 전달하지 않음", "키보드 focus ring과 명확한 label 제공"].forEach((item) => accessibility.append(el("div", "a11y-row", el("span", "a11y-check", "✓"), el("span", "", item))));
-  governanceGrid.append(lineage, consent, accessibility);
-  governance.append(governanceGrid);
-
-  const summary = panel("05 Figma placement summary", "세 페이지의 역할을 한 번에 확인합니다.", "component-summary");
-  const summaryGrid = el("div", "placement-grid");
-  [["01_User — Gate & Case", "S00 → G03 → C01~C08", "사용자 Gate와 사건 흐름"], ["02_Reviewer — Review", "R01 → R06", "담당자 원문 검토 흐름"], ["03_Components & States", "토큰 · 상태 · 규칙", "공통 UI와 안전 경계"]].forEach(([title, route, description]) => {
-    const item = el("div", "placement-item");
-    append(item, badge(title.split(" — ")[0], COLORS.blue), el("strong", "", title), el("span", "", route), el("p", "", description));
-    summaryGrid.append(item);
-  });
-  summary.append(summaryGrid);
-  page.append(foundation, core, product, governance, summary);
-  return page;
-}
-
 /*
  * The routes below are the implementation views.  They intentionally do not
  * contain review notes or a second navigation frame: one route maps to one
@@ -2847,6 +2781,20 @@ function landingStageCard(stage) {
   return card;
 }
 
+function stageSwitchLinks(current) {
+  const options = [
+    ["before", "아직 보내기 전", "before"],
+    ["after", "이미 보낸 직후", "transfer"],
+    ["s00", "계좌가 막힌 후", "freeze"],
+    ["shield", "반복 연락·협박", "shield"],
+  ].filter(([screen]) => screen !== current);
+  const section = el("section", "stage-switcher");
+  const links = el("div", "stage-switcher-links");
+  options.forEach(([screen, label, flow]) => links.append(screenButton(label, screen, "stage-switcher-link", { "data-entry-flow": flow })));
+  append(section, el("strong", "stage-switcher-title", "내 상황이 다르면"), el("p", "stage-switcher-copy", "지금 상태에 맞는 화면으로 바로 이동할 수 있습니다."), links);
+  return section;
+}
+
 function renderLandingPage() {
   const page = el("div", "landing-page");
   page.append(landingNavigation());
@@ -2934,6 +2882,7 @@ function renderLandingPage() {
 
 function renderActualS00() {
   const body = el("div", "figma-screen-content");
+  body.append(el("span", "figma-frozen-context", "이 MVP의 본편 · 계좌가 막힌 후 설명자료 준비"));
   body.append(el("h1", "figma-screen-title figma-home-title", "계좌가 막혔고,\n돈을 보내면 신고를 취소하겠다는\n연락을 받으셨나요?"));
   body.append(el("p", "figma-screen-description", "추가 송금을 멈추고, 흩어진 정상거래 자료를 은행이 검토할 수 있는 형태로 정리합니다."));
 
@@ -2946,7 +2895,7 @@ function renderActualS00() {
   body.append(cases);
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("예시 사건으로 체험", "select-case", { "data-case-id": "danger-transfer" }), figmaSecondary("다른 사례 보기", "g01", { "data-action": "select-case", "data-case-id": "abstain" }));
-  body.append(actions, actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }), el("p", "figma-bottom-note", "실제 개인정보 대신 제공된 합성 샘플만 사용합니다."));
+  body.append(actions, el("p", "figma-bottom-note", "실제 개인정보 대신 제공된 합성 샘플만 사용합니다."), stageSwitchLinks("s00"), actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
   return append(figmaMobileFrame("게스트 체험", body, "figma-gate-mobile"), renderServiceTour());
 }
 
@@ -2996,7 +2945,7 @@ function renderActualG01() {
     form.append(textarea, actionButton("예시로 바꾸기", "sample", "figma-inline-button", { "data-case-id": "danger-transfer" }), actionButton(state.busy ? "점검 중…" : "이 메시지 점검하기", "submit", "button figma-primary figma-input-primary", { type: "submit", disabled: state.busy }));
     body.append(form, el("div", "figma-url-note", "메시지 속 링크는 열지 않고 글자만 확인합니다."));
   }
-  body.append(actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
+  body.append(el("p", "figma-input-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 사건으로 선택한 자료에는 24시간 자동 삭제 정책이 적용됩니다."), actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
   return append(figmaMobileFrame("1 / 7", body, "figma-gate-mobile"), renderServiceTour());
 }
 
@@ -3004,9 +2953,15 @@ function renderActualG02() {
   const result = FIGMA_RESULT_STATES[state.variant] || FIGMA_RESULT_STATES.DANGER;
   const body = el("div", "figma-screen-content figma-result-content");
   const analysis = state.gateAnalysis;
+  const resultLabel = {
+    DANGER: "즉시 멈춤 신호",
+    LOW_RISK_NOT_PROOF: "낮은 신호 · 안전 확정 아님",
+    ABSTAIN: "판단 보류",
+    INJECTION_DETECTED: "위험한 지시문 포함",
+  }[state.variant] || "추가 확인 필요";
   const rows = (analysis?.evidence || []).map(item => [BEFORE_CATEGORY_LABELS[item.category] || "관찰된 표현", "“" + item.text + "”"]);
   const title = state.variant === "CAUTION" ? "추가 행동 전 독립적인 확인이 필요합니다" : result.title;
-  body.append(figmaAlert("규칙 기반 점검 · " + state.variant, title), figmaEvidenceList(rows.length ? rows : [["확인할 근거", "현재 점검에서 표시할 근거가 없습니다. 안전하다는 뜻은 아닙니다."]]));
+  body.append(figmaAlert("규칙 기반 점검 · " + resultLabel, title), figmaEvidenceList(rows.length ? rows : [["확인할 근거", "현재 점검에서 표시할 근거가 없습니다. 안전하다는 뜻은 아닙니다."]]));
   body.append(figmaCallout("원문에 대한 다음 행동", analysis?.safe_action || "원문과 요청을 공식 채널에서 직접 확인하세요.", "info"), figmaCallout(result.checkTitle, result.check, "info"));
   const actions = el("div", "figma-mobile-actions");
   actions.append(figmaPrimary("정리할 자료 확인", "open-consent"));
@@ -3019,12 +2974,12 @@ function renderActualG02() {
 
 function renderActualG03() {
   const body = el("div", "figma-screen-content figma-consent-content");
-  body.append(el("h1", "figma-screen-title", "이 메시지를\n자료 정리의 첫 근거로 남길까요?"), el("p", "figma-screen-description", "받은 메시지를 기준으로 계좌가 막힌 후 자료 정리를 시작합니다. 서버나 브라우저 저장소에는 보관하지 않습니다."));
+  body.append(el("h1", "figma-screen-title", "이 메시지를\n자료 정리의 첫 근거로 남길까요?"), el("p", "figma-screen-description", "받은 메시지를 기준으로 계좌가 막힌 후 자료 정리를 시작합니다. 입력 원문은 분석 처리 후 저장하지 않으며, 사건으로 선택한 자료에는 24시간 자동 삭제 정책이 적용됩니다."));
   const evidence = el("section", "figma-consent-evidence");
   append(evidence, figmaBadge("받은 메시지", "figma-badge-blue"), el("strong", "", "방금 점검한 메시지"), el("p", "", "받은 내용을 그대로 가져오고, 확인 내용과 수정 이력은 별도로 남깁니다."));
   body.append(evidence, el("h3", "figma-section-title", "자료 사용 범위 확인"));
   const checks = el("div", "figma-consent-list");
-  ["실제 개인정보 대신 합성 텍스트 자료만 사용합니다.", "새로고침하면 이 작업이 사라집니다. 필요한 자료는 먼저 내려받으세요.", "내려받을 내용과 받은 메시지는 직접 확인합니다. 기관에 자동 전송되지 않습니다."].forEach((label, index) => {
+  ["실제 개인정보 대신 합성 텍스트 자료만 사용합니다.", "사건으로 선택한 자료는 24시간 후 자동 삭제됩니다. 새로고침하면 현재 작업도 사라집니다.", "내려받을 내용과 받은 메시지는 직접 확인합니다. 기관에 자동 전송되지 않습니다."].forEach((label, index) => {
     const row = el("label", "figma-consent-item");
     const input = setAttrs(el("input"), { type: "checkbox", checked: state.consentItems[index + 1] === true, "data-consent-item": index + 1 });
     append(row, input, el("span", "", label));
@@ -3032,7 +2987,7 @@ function renderActualG03() {
   });
   body.append(checks);
   const summary = el("section", "figma-storage-summary");
-  append(summary, el("strong", "", "이번에 정리하는 것"), el("span", "", "선택한 합성 메시지 · 확인 내용 · 수정 이력"), el("div", "figma-summary-divider"), el("strong", "", "하지 않는 것"), el("span", "", "서버 저장 · 자동 제출 · 계좌 막힘 해제"));
+  append(summary, el("strong", "", "이번에 정리하는 것"), el("span", "", "선택한 합성 메시지 · 확인 내용 · 수정 이력"), el("strong", "", "보관 정책"), el("span", "", "사건으로 선택한 자료는 24시간 후 자동 삭제"), el("div", "figma-summary-divider"), el("strong", "", "하지 않는 것"), el("span", "", "자동 제출 · 계좌 막힘 해제"));
   body.append(summary);
   if (state.notice) body.append(el("p", "figma-error-message", state.notice));
   const actions = el("div", "figma-mobile-actions");
@@ -3049,7 +3004,7 @@ function renderActualC01Mobile() {
     body.append(figmaEvidenceList([["받은 자료", record.evidence.length + "건 연결"], ["확인할 항목", record.facts.length + "건 · 받은 내용과 대조 필요"], ["보관 범위", "현재 탭에서만 작업"], ["최종 결과물", "선택한 자료와 확인 내용이 담긴 설명자료"]], "현재 사례"));
     body.append(figmaCallout("작업 보관 안내", "서버에 저장하지 않습니다. 새로고침 전에 자료를 내려받아 주세요.", "info"));
     body.append(el("div", "figma-mobile-actions", recordViewButton("자료 상태 확인", "frozen", "c02", true), recordViewButton("사건 개요 보기", "frozen", "c01")), actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
-    return append(figmaMobileFrame("사건 시작", body, "figma-case-mobile"), renderServiceTour());
+    return figmaMobileFrame("사건 시작", body, "figma-case-mobile");
   }
   const body = el("div", "figma-screen-content figma-case-content");
   body.append(figmaAlert("CASE", "사건 자료를 확인하세요"), figmaEvidenceList([
@@ -3062,7 +3017,7 @@ function renderActualC01Mobile() {
   const actions = el("div", "figma-mobile-actions");
   append(actions, figmaPrimary("자료 상태 확인", "advance-workspace", { "data-next-screen": "c02" }), figmaSecondary("나중에 확인", "workspace", { "data-case-screen": "c01" }));
   body.append(actions, actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
-  return append(figmaMobileFrame("1 / 7", body, "figma-case-mobile"), renderServiceTour());
+  return figmaMobileFrame("1 / 7", body, "figma-case-mobile");
 }
 
 function renderActualC03Mobile() {
@@ -3080,6 +3035,14 @@ function renderActualC03Mobile() {
   append(actions, desktop, figmaSecondary("다음에 확인", "workspace", { "data-case-screen": "c03" }));
   body.append(actions, actionButton("이 화면 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "frozen" }));
   return append(figmaMobileFrame("1 / 7", body, "figma-case-mobile"), renderServiceTour());
+}
+
+function renderActualC01Responsive() {
+  const desktop = state.showReference ? renderActualC01Desktop() : renderRecordWorkspace("frozen", "c01");
+  const mobile = renderActualC01Mobile();
+  const page = el("div", "responsive-case-route responsive-c01-route");
+  append(page, desktop, mobile, renderServiceTour());
+  return page;
 }
 
 function workspaceRail(active) {
@@ -3182,6 +3145,16 @@ function renderBeforeCapture() {
     el("p", "before-capture-intro", "메시지 한 건을 넣으면 위험 신호와\n지금 멈춰야 할 행동을 바로 보여드려요."),
   );
 
+  const firstDemo = el("section", "before-capture-first-demo");
+  append(
+    firstDemo,
+    figmaBadge("추천 시작", "figma-badge-blue"),
+    el("strong", "before-capture-first-demo-title", "예시로 30초 먼저 확인하세요"),
+    el("p", "before-capture-first-demo-copy", "실제 개인정보 없이 위험 신호와 지금 멈출 행동을 바로 확인합니다."),
+    actionButton("예시로 바로 점검", "before-check-example", "button figma-primary before-capture-demo-primary"),
+  );
+  body.append(firstDemo, el("div", "before-capture-input-divider", "내 메시지로 확인하기"));
+
   const tabs = el("div", "before-capture-tabs");
   append(
     tabs,
@@ -3205,10 +3178,11 @@ function renderBeforeCapture() {
   const sample = el("div", "before-capture-sample");
   const sampleCopy = el("div", "before-capture-sample-copy");
   append(sampleCopy, el("p", "", "예시: “30분 안에 입금하지 않으면…”"), el("p", "", "→ 시간 제한 + 금전 요구를 확인합니다."));
-  append(sample, sampleCopy, actionButton("예시 보기", "before-example", "before-capture-sample-chip"));
-  body.append(sample, el("div", "before-capture-privacy", "업로드한 원문은 결과 확인 후 보관하지 않습니다."));
+  append(sample, sampleCopy, actionButton("예시를 입력창에 넣기", "before-example", "before-capture-sample-chip"));
+  body.append(sample, el("div", "before-capture-privacy", "입력한 문장은 분석을 위해 서버로 전송됩니다. 처리 후 서버·브라우저 저장소에는 보관하지 않습니다. 실제 개인정보 대신 합성 예시를 사용하세요."));
   body.append(actionButton(state.busy ? "분석 중…" : "메시지 점검하기", "before-check", "button figma-primary before-capture-primary", { disabled: state.busy, "aria-busy": String(state.busy) }));
   body.append(actionButton("이미 계좌가 막혔다면  계좌가 막힌 후 →", "before-freeze", "before-capture-alt"));
+  body.append(stageSwitchLinks("before"));
   body.append(actionButton("이 서비스 사용 방법", "open-service-tour", "service-guide-link", { "data-service-tour-kind": "before" }));
   body.append(el("p", "before-capture-disclaimer", "위험 신호 참고용 · 사기 여부를 확정하지 않습니다."));
   if (state.beforeNotice) body.append(setAttrs(el("p", "before-capture-notice", state.beforeNotice), { role: "status", "aria-live": "polite" }));
@@ -3382,7 +3356,7 @@ function frozenDesktopStepNavigation(activeIndex, maxStep) {
   const aside = el("aside", "after-desktop-stepper frozen-desktop-stepper");
   append(
     aside,
-    el("span", "after-desktop-stepper-kicker", "FROZEN · 계좌가 막힌 후"),
+    el("span", "after-desktop-stepper-kicker", "계좌가 막힌 후 · 설명자료"),
     el("h2", "after-desktop-stepper-title", "계좌가 막힌 후 자료 정리"),
     el("p", "after-desktop-stepper-copy", "받은 메시지와 거래 자료를 확인하고, 은행에 설명할 자료를 준비합니다."),
   );
@@ -3465,7 +3439,7 @@ function shieldDesktopStepNavigation(activeIndex) {
   const aside = el("aside", "after-desktop-stepper shield-desktop-stepper");
   append(
     aside,
-    el("span", "after-desktop-stepper-kicker", "SHIELD · 불법 추심 대응"),
+    el("span", "after-desktop-stepper-kicker", "불법 추심 · 연락 기록"),
     el("h2", "after-desktop-stepper-title", "연락 기록 준비"),
     el("p", "after-desktop-stepper-copy", "안전 확보를 먼저 확인하고, 연락과 원문을 순서대로 기록합니다."),
   );
@@ -3541,7 +3515,7 @@ function figmaDesktopEvidence(label, value, source = "AI_EXTRACTED") {
 
 function renderActualC01Desktop() {
   const content = el("div", "figma-desktop-content");
-  content.append(figmaCallout("FROZEN · 계좌가 막힌 후", "거래·대화·문서를 한 사례에 연결해 은행에 설명할 자료를 준비합니다. 받은 내용 확인 → 사실 확인 → 거래 연결 순서로 진행하세요.", "info"));
+  content.append(figmaCallout("계좌가 막힌 후 · 설명자료", "거래·대화·문서를 한 사례에 연결해 은행에 설명할 자료를 준비합니다. 받은 내용 확인 → 사실 확인 → 거래 연결 순서로 진행하세요.", "info"));
   content.append(figmaDesktopStats([["증거", "19", "원문·자료 연결", "info"], ["사실", "14", "AI 추출 11 · 확인 3", "success"], ["확인 필요", "03", "사람 검토 대기", "warning"], ["상충", "01", "Case B", "danger"]]));
   const grid = el("div", "figma-two-column");
   const summary = figmaDesktopSection("사건 요약", "Gate에서 보관 동의한 첫 번째 증거를 기준으로 정리합니다.");
@@ -3709,12 +3683,6 @@ function renderActualReviewer() {
   return figmaDesktopFrame(reviewerRail(state.reviewScreen), "Reviewer Workspace", "원문을 확인하고 사건의 검토 상태를 기록합니다.", content, "figma-review-frame");
 }
 
-function renderActualComponents() {
-  const page = renderComponents();
-  page.className = "page figma-components-page";
-  return page;
-}
-
 function render() {
   const isLanding = state.screen === "home";
   appMain.classList.toggle("is-landing", isLanding);
@@ -3728,11 +3696,10 @@ function render() {
   else if (state.screen === "shield") page = renderShieldFlow();
   else if (state.screen === "shield-workspace") page = append(renderRecordWorkspace("shield", state.shieldView), renderServiceTour());
   else if (state.screen === "workspace") page = renderActualWorkspace();
-  else if (state.screen === "c01") page = renderActualC01Mobile();
+  else if (state.screen === "c01") page = renderActualC01Responsive();
   else if (state.screen === "c03") page = renderActualC03Mobile();
   else if (["c02", "c04", "c05a", "c05b", "c06", "c07", "c08"].includes(state.screen)) page = renderActualCaseDesktop(state.screen);
   else if (state.screen === "reviewer") page = renderActualReviewer();
-  else if (state.screen === "components") page = renderActualComponents();
   else page = renderActualS00();
   if (isLanding) {
     appMain.replaceChildren(page);
@@ -3948,6 +3915,13 @@ document.addEventListener("click", (event) => {
     state.beforeFileName = "";
     state.beforeNotice = "예시 메시지를 불러왔습니다. 메시지 점검하기를 눌러주세요.";
     render();
+  } else if (action === "before-check-example") {
+    state.beforeInputMode = "direct";
+    state.beforeText = FIGMA_SAMPLE_TEXT;
+    state.beforeFile = null;
+    state.beforeFileName = "";
+    state.beforeNotice = "";
+    runBeforeAnalysis();
   } else if (action === "before-check") {
     runBeforeAnalysis();
   } else if (action === "after-sample") {

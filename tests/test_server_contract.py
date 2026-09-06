@@ -63,12 +63,18 @@ class ServerContractTests(unittest.TestCase):
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
         self.assertIn('id="app-main"', index_html)
         self.assertIn('class="prototype-root"', index_html)
-        for screen in ("home", "s00", "g01", "g02", "g03", "before", "before-result", "after", "shield", "workspace", "reviewer", "components"):
+        for screen in ("home", "s00", "g01", "g02", "g03", "before", "before-result", "after", "shield", "workspace", "reviewer"):
             self.assertIn(f'"{screen}"', app_js)
         self.assertIn("figma-mobile-screen", app_js)
         self.assertIn("figma-desktop-frame", app_js)
         for copy in ("BEFORE · 행동 직전", "메시지 점검하기", "공식 채널에서 확인하기", "runBeforeAnalysis", "before-message", "before-screenshot-input"):
             self.assertIn(copy, app_js)
+
+    def test_internal_components_route_redirects_to_overview(self) -> None:
+        app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
+        self.assertIn('if (screen === "components")', app_js)
+        self.assertIn('state.screen = "overview"', app_js)
+        self.assertNotIn("renderActualComponents", app_js)
 
     def test_service_starts_with_responsive_main_navigation(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
@@ -108,7 +114,7 @@ class ServerContractTests(unittest.TestCase):
         ):
             self.assertIn(marker, app_js)
         self.assertIn("startFrozenRecord(state.message)", app_js)
-        self.assertIn("서버나 브라우저 저장소에는 보관하지 않습니다", app_js)
+        self.assertIn("서버·브라우저 저장소에는 보관하지 않습니다", app_js)
 
     def test_frontend_covers_the_figma_screen_map(self) -> None:
         app_js = (WEB_ROOT / "app.js").read_text(encoding="utf-8")
@@ -118,7 +124,7 @@ class ServerContractTests(unittest.TestCase):
             self.assertIn(f'"{screen}"', app_js)
         for state in ("DANGER", "LOW_RISK_NOT_PROOF", "ABSTAIN", "INJECTION_DETECTED"):
             self.assertIn(state, app_js)
-        for marker in ("FROZEN · 계좌가 막힌 후", "은행에 설명할 자료를 준비합니다", "설명자료 준비 상태", "renderActualC01Desktop"):
+        for marker in ("계좌가 막힌 후 · 설명자료", "은행에 설명할 자료를 준비합니다", "설명자료 준비 상태", "renderActualC01Desktop"):
             self.assertIn(marker, app_js)
 
     def test_three_stage_entry_points_are_explicit(self) -> None:

@@ -82,7 +82,7 @@ function recordRail(kind, view) {
   const rail = setAttrs(el("aside", "figma-service-rail record-rail"), frozen ? { "data-workspace-screen": view } : {});
   const brand = screenButton("FinGuard", "home", "figma-rail-brand-link", { "aria-label": "FinGuard 홈" });
   append(rail, el("div", "figma-rail-brand", el("span", "figma-rail-mark", "F"), brand),
-    el("span", "figma-rail-caption", kind === "shield" ? "SHIELD · 불법 추심 대응" : "FROZEN · 계좌가 막힌 후"),
+    el("span", "figma-rail-caption", kind === "shield" ? "불법 추심 · 연락 기록" : "계좌가 막힌 후 · 설명자료"),
     el("strong", "figma-rail-case", kind === "shield" ? "추심 연락 기록" : "계좌가 막힌 후 자료 정리"),
     el("span", "figma-rail-subtitle", "합성자료 체험 · 브라우저 내 작업"));
   const nav = setAttrs(el("nav", frozen ? "figma-rail-nav figma-stepper-nav" : "figma-rail-nav"), { "aria-label": kind === "shield" ? "불법 추심 업무 메뉴" : "사건 진행 단계" });
@@ -355,7 +355,7 @@ function renderRecordWorkspace(kind, view) {
   else if (step === "06") content.append(recordTimeline(kind));
   else content.append(recordReport(kind));
   const frame = figmaDesktopFrame(recordRail(kind, view), titles[view] || "원문·사실 확인",
-    (shield ? "SHIELD" : "FROZEN") + " · " + record.id, content, "record-workspace");
+    (shield ? "불법 추심" : "계좌가 막힌 후") + " · " + record.id, content, "record-workspace");
   frame.dataset.recordKind = kind;
   return frame;
 }
